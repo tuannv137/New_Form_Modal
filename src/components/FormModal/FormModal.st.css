@@ -1,0 +1,109 @@
+@st-import [B10, B30, B40, D10, D10-66, D40, D50, D65, D70, D80] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+
+.root {
+    overflow: hidden;
+}
+
+.root > div > div > div > div:nth-child(2) {
+    padding: 30px 48px !important;
+}
+
+.nameTypeSelect > div:hover {
+    cursor: pointer;
+}
+
+.nameTypeSelect > div > div > span:last-child:hover {
+    color: value(B10) !important;
+    transition: all 0.2s;
+}
+
+.titleType {
+    -st-states: isSelected;
+}
+
+.titleType:isSelected > div {
+    border-bottom: 3px solid value(B10);
+}
+
+.titleType:isSelected > div > div > span:last-child {
+    color: value(B10) !important;
+}
+
+.titleType:hover > div > div > span:last-child {
+    color: value(B10) !important;
+    transition: all 0.2s;
+}
+
+.contentTypeSelect {
+    -st-states: typeSelect(enum(1, 2, 3, 4)), isShow;
+}
+
+.contentTypeSelect > div {
+    width: 100%;
+    padding: 0;
+}
+
+.contentTypeSelect:typeSelect(1) {
+    display: none;
+}
+
+.contentTypeSelect:typeSelect(1):isShow {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 455px;
+    gap: 10px;
+}
+
+.iconAdd {
+    width: 69px;
+    height: 69px;
+    color: value(B30);
+}
+
+.formBlank {
+    justify-content: center;
+    align-items: center;
+}
+
+.formBlank div {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.textOne {
+    font-weight: 700 !important;
+}
+
+.templateLeft {
+    border-right: 2px solid #eee;
+}
+
+.search {
+    padding: 14px 20px;
+}
+
+.itemList {
+    -st-states: isSelected;
+    padding: 7px 20px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: value(D10);
+}
+
+.itemList:hover {
+    background-color: value(B40);
+    cursor: pointer;
+}
+
+.itemList:isSelected {
+    background-color: value(B40);
+}
+
+.templateRight {
+    padding: 24px 48px;
+}

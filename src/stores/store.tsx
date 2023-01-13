@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import mainReducer from "./ReduxStore";
+import newFormModalReducer from "./ReduxStore";
 
 export const initStore = () => {
   return configureStore({
-    reducer: { mainStore: mainReducer },
+    reducer: { new_form_modal: newFormModalReducer },
   });
 };
 

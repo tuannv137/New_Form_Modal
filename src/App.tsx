@@ -1,13 +1,14 @@
 import { Provider } from "react-redux";
-import Content from "./components/Content";
-import { initStore } from "./stores/store";
 
-function App(props?: InitDataType) {
-    const store = initStore();
-    return (
-        <Provider store={store}>
-            <Content {...props} />
-        </Provider>
-    );
+import { initStore } from "./stores/store";
+import ButtonFormModal from "./components/ButtonFormModal/ButtonFormModal";
+
+function App(props?: { openModal?: boolean }) {
+  const store = initStore();
+  return (
+    <Provider store={store}>
+      <ButtonFormModal {...props} />
+    </Provider>
+  );
 }
 export default App;
