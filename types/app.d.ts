@@ -1,3 +1,10 @@
 declare interface InitDataType {
-  title?: string;
+  dataTemplate?: Data[];
+}
+
+declare interface Data {
+  id?: string;
+  name?: string;
+  isSelect?: boolean;
+  url_image?: string;
 }

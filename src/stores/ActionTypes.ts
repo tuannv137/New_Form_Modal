@@ -1,6 +1,12 @@
-import type {PayloadAction } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
 
 export type ActionTypes = {
-    initStore: (state: InitDataType, action: PayloadAction<{title?: string}>) => void;
-    changeTitle: (state: InitDataType, action: PayloadAction<{title?: string}>) => void;
+  initArrDataTemplate: (
+    state: InitDataType,
+    action: PayloadAction<Data[]>
+  ) => void;
+  changeTitle: (
+    state: InitDataType,
+    action: PayloadAction<{ title?: string }>
+  ) => void;
 };

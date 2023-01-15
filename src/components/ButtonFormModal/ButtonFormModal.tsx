@@ -31,8 +31,6 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
     console.log(inputNameForm);
   };
 
-  console.log(isOpenModal);
-
   return (
     <div className={st(classes.root)}>
       <Button onClick={openFormModal} className={st(classes.btnOpenModal)}>

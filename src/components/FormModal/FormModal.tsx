@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 import Page from "mgz-ui/dist/src/Page";
 import Card from "mgz-ui/dist/src/Card";
 import Box from "mgz-ui/dist/src/Box";
@@ -9,9 +10,15 @@ import Image from "mgz-ui/dist/src/Image";
 import { Add } from "@wix/wix-ui-icons-common";
 import { st, classes } from "./FormModal.st.css";
 import _ from "lodash";
+import { useDispatch, useSelector } from "react-redux";
+import { initArrDataTemplate } from "../../stores/ReduxStore";
 
 export type FormModalProps = {};
 const FormModal = ({}: FormModalProps) => {
+  const data = useSelector(
+    (state: { new_form_modal: InitDataType }) => state.new_form_modal
+  );
+
   const [arrTypeForm, setArrTypeFrom] = useState<
     { id?: string; isSelect?: boolean; name?: string }[]
   >([
@@ -21,18 +28,7 @@ const FormModal = ({}: FormModalProps) => {
     { id: "4", isSelect: false, name: "Import Form" },
   ]);
 
-  const [arrTemplate, setArrTemplate] = useState<
-    { id?: string; isSelect?: boolean; name?: string }[]
-  >([
-    { id: "1", isSelect: true, name: "Contact form" },
-    { id: "2", isSelect: false, name: "Newsletter form" },
-    { id: "3", isSelect: false, name: "Servey form" },
-    { id: "4", isSelect: false, name: "Booking form" },
-    { id: "5", isSelect: false, name: "Request for quote" },
-    { id: "6", isSelect: false, name: "Feedback form" },
-    { id: "7", isSelect: false, name: "Book a form" },
-    { id: "8", isSelect: false, name: "build a pizza" },
-  ]);
+  let arrTemplate: Data[] | undefined = data.dataTemplate;
 
   const handleClickSelect = (type?: string, id?: string) => {
     if (id) {
@@ -45,16 +41,33 @@ const FormModal = ({}: FormModalProps) => {
           )
         );
       } else {
-        setArrTemplate(
-          _.map(arrTemplate, (item) =>
-            item.id === id
-              ? { ...item, isSelect: true }
-              : { ...item, isSelect: false }
-          )
+        arrTemplate = _.map(arrTemplate, (item) =>
+          item.id === id
+            ? { ...item, isSelect: true }
+            : { ...item, isSelect: false }
         );
+        dispatch(initArrDataTemplate(arrTemplate));
       }
     }
   };
+
+  const dispatch = useDispatch();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const getArrTemplate = useCallback(async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3006/get-form-template"
+      );
+      dispatch(initArrDataTemplate(response.data));
+    } catch (error) {}
+  }, [dispatch]);
+
+  useEffect(() => {
+    getArrTemplate();
+  }, [getArrTemplate]);
+
+  console.log(data);
 
   return (
     <Page className={st(classes.root)}>
@@ -129,7 +142,17 @@ const FormModal = ({}: FormModalProps) => {
                       </Box>
                     </Box>
                     <Box width="75%" className={st(classes.templateRight)}>
-                      <Image showBorder />
+                      {arrTemplate &&
+                        _.map(
+                          arrTemplate,
+                          (item) =>
+                            item.isSelect === true && (
+                              <Image
+                                src={item?.url_image}
+                                alt={item?.url_image}
+                              />
+                            )
+                        )}
                     </Box>
                   </Box>
                 </Card.Content>

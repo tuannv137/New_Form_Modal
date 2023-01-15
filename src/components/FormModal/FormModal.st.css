@@ -21,6 +21,10 @@
     -st-states: isSelected;
 }
 
+.titleType > div {
+   padding: 18px 18px 16px 18px;
+}
+
 .titleType:isSelected > div {
     border-bottom: 3px solid value(B10);
 }
