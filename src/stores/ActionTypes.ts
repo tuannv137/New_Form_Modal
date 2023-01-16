@@ -5,8 +5,18 @@ export type ActionTypes = {
     state: InitDataType,
     action: PayloadAction<Data[]>
   ) => void;
-  changeTitle: (
+
+  newFormModal: (state: InitDataType, action: PayloadAction<Data[]>) => void;
+
+  setNameTypeSelectForm: (
     state: InitDataType,
-    action: PayloadAction<{ title?: string }>
+    action: PayloadAction<string>
   ) => void;
+
+  setInputNameFormStore: (
+    state: InitDataType,
+    action: PayloadAction<string>
+  ) => void;
+
+  setInputFile: (state: InitDataType, action: PayloadAction<string>) => void;
 };

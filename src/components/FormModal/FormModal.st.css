@@ -1,4 +1,6 @@
 @st-import [B10, B30, B40, D10, D10-66, D40, D50, D65, D70, D80] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+@st-import Image from "mgz-ui/dist/src/Image/Image.st.css";
+@st-import EmptyState from "mgz-ui/dist/src/EmptyState/EmptyState.st.css";
 
 .root {
     overflow: hidden;
@@ -6,6 +8,10 @@
 
 .root > div > div > div > div:nth-child(2) {
     padding: 30px 48px !important;
+}
+
+.cardFormModal {
+    width: 844px;
 }
 
 .nameTypeSelect > div:hover {
@@ -22,7 +28,7 @@
 }
 
 .titleType > div {
-   padding: 18px 18px 16px 18px;
+    padding: 18px 18px 16px 18px;
 }
 
 .titleType:isSelected > div {
@@ -45,18 +51,30 @@
 .contentTypeSelect > div {
     width: 100%;
     padding: 0;
+    min-height: 455px;
+    position: relative;
+}
+
+.contentTypeSelect:typeSelect(1) > div {
+    width: 100%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.contentTypeSelect:typeSelect(4) > div {
+    padding: 30px;
 }
 
 .contentTypeSelect:typeSelect(1) {
-    display: none;
-}
-
-.contentTypeSelect:typeSelect(1):isShow {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 455px;
+    gap: 10px;
+}
+
+.contentTypeSelect:typeSelect(4) {
+    justify-content: center;
+    align-items: center;
     gap: 10px;
 }
 
@@ -71,7 +89,7 @@
     align-items: center;
 }
 
-.formBlank div {
+.formBlank > div {
     font-weight: 400;
     font-size: 16px;
     line-height: 30px;
@@ -82,32 +100,6 @@
     font-weight: 700 !important;
 }
 
-.templateLeft {
-    border-right: 2px solid #eee;
-}
-
-.search {
-    padding: 14px 20px;
-}
-
-.itemList {
-    -st-states: isSelected;
-    padding: 7px 20px;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 18px;
-    color: value(D10);
-}
-
-.itemList:hover {
-    background-color: value(B40);
-    cursor: pointer;
-}
-
-.itemList:isSelected {
-    background-color: value(B40);
-}
-
-.templateRight {
-    padding: 24px 48px;
-}
+/* EmptyState {
+    padding: 25px !important;
+} */

@@ -25,6 +25,7 @@
     "@types/uuid": "^8.3.4",
     "axios": "^0.27.2",
     "babel-loader": "^8.2.5",
+    "jquery": "^3.6.3",
     "lodash": "^4.17.21",
     "lodash-webpack-plugin": "^0.11.6",
     "mgz-ui": "bitbucket:magezon/ui",

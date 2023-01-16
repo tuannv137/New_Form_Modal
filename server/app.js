@@ -30,21 +30,33 @@ app.get("/get-form-template", (req, res) => {
 app.post("/post-new-form", (req, res) => {
   try {
     const data = req.body;
+
+    if (!data.name) {
+      return res.status(200).json({
+        code: 1,
+        message: "Form name cannot be empty.",
+      });
+    }
+
     const newForm = {
       id: data.id,
       name: data.name,
       type: data.type,
     };
+
     const arrForm = _.cloneDeep(data.arrForm);
 
     if (_.find(arrForm, ["name", data.name])) {
-      return res.status(400).json({
-        message: "Name of the form already exists!",
+      return res.status(200).json({
+        code: 2,
+        message: "Name of the form already exists.",
       });
     } else {
       return res.status(200).json({
-        data: newForm,
-        message: "Create form success!",
+        newForm,
+        arrForm,
+        code: 0,
+        message: "Create form successfully.",
         url_redirect: "/form",
       });
     }

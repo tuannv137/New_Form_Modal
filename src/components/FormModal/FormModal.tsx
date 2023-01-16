@@ -1,23 +1,34 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+import _ from "lodash";
+import { useDispatch, useSelector } from "react-redux";
 import Page from "mgz-ui/dist/src/Page";
 import Card from "mgz-ui/dist/src/Card";
 import Box from "mgz-ui/dist/src/Box";
-import Layout from "mgz-ui/dist/src/Layout";
-import Search from "mgz-ui/dist/src/Search";
-import Image from "mgz-ui/dist/src/Image";
-// import Cell from "mgz-ui/dist/src/Layout/Cell";
-import { Add } from "@wix/wix-ui-icons-common";
+import AddItem from "mgz-ui/dist/src/AddItem";
+import Dropzone from "mgz-ui/dist/src/Dropzone";
+import FileUpload from "mgz-ui/dist/src/FileUpload";
+import EmptyState from "mgz-ui/dist/src/EmptyState";
+import TextButton from "mgz-ui/dist/src/TextButton";
+import { Add, Upload } from "@wix/wix-ui-icons-common";
+import {
+  initArrDataTemplate,
+  setInputFile,
+  setInputNameFormStore,
+  setNameTypeSelectForm,
+} from "../../stores/ReduxStore";
+import ItemForm from "./ItemForm/ItemForm";
 import { st, classes } from "./FormModal.st.css";
-import _ from "lodash";
-import { useDispatch, useSelector } from "react-redux";
-import { initArrDataTemplate } from "../../stores/ReduxStore";
 
 export type FormModalProps = {};
-const FormModal = ({}: FormModalProps) => {
+
+const FormModal = () => {
   const data = useSelector(
     (state: { new_form_modal: InitDataType }) => state.new_form_modal
   );
+  const nameTypeSelect = data.nameTypeSelectForm;
+  const arrDataNewForm = data.arrDataNewForm;
+  const inputFile = data.inputFile;
 
   const [arrTypeForm, setArrTypeFrom] = useState<
     { id?: string; isSelect?: boolean; name?: string }[]
@@ -28,9 +39,15 @@ const FormModal = ({}: FormModalProps) => {
     { id: "4", isSelect: false, name: "Import Form" },
   ]);
 
-  let arrTemplate: Data[] | undefined = data.dataTemplate;
+  let arrTemplate = data.dataTemplate;
 
-  const handleClickSelect = (type?: string, id?: string) => {
+  const dispatch = useDispatch();
+
+  const handleClickSelect = (
+    type?: string,
+    id?: string,
+    typeSelect?: string
+  ) => {
     if (id) {
       if (type === "ARR_TYPE_SELECT") {
         setArrTypeFrom(
@@ -40,18 +57,21 @@ const FormModal = ({}: FormModalProps) => {
               : { ...item, isSelect: false }
           )
         );
+        typeSelect && dispatch(setNameTypeSelectForm(typeSelect));
       } else {
         arrTemplate = _.map(arrTemplate, (item) =>
           item.id === id
             ? { ...item, isSelect: true }
             : { ...item, isSelect: false }
         );
+        if (nameTypeSelect === "Use Template") {
+          const name = _.find(arrTemplate, { id });
+          name && name.name && dispatch(setInputNameFormStore(name?.name));
+        }
         dispatch(initArrDataTemplate(arrTemplate));
       }
     }
   };
-
-  const dispatch = useDispatch();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const getArrTemplate = useCallback(async () => {
@@ -67,13 +87,14 @@ const FormModal = ({}: FormModalProps) => {
     getArrTemplate();
   }, [getArrTemplate]);
 
-  console.log(data);
+  const handleOnChangeUpload = (e: any) => {
+    e && e[0] && dispatch(setInputFile(e[0].name));
+  };
 
   return (
-    <Page className={st(classes.root)}>
+    <Page className={st(classes.root)} maxWidth={940}>
       <Page.Content>
-        {/* <Box display="block"> */}
-        <Card>
+        <Card className={st(classes.cardFormModal)}>
           <Box className={st(classes.nameTypeSelect)}>
             {_.map(arrTypeForm, (item) => (
               <Box key={item.id}>
@@ -81,7 +102,9 @@ const FormModal = ({}: FormModalProps) => {
                   className={st(classes.titleType, {
                     isSelected: item.isSelect,
                   })}
-                  onClick={() => handleClickSelect("ARR_TYPE_SELECT", item.id)}
+                  onClick={() =>
+                    handleClickSelect("ARR_TYPE_SELECT", item.id, item.name)
+                  }
                 >
                   <Card.Header title="" subtitle={item.name} />
                 </div>
@@ -89,84 +112,96 @@ const FormModal = ({}: FormModalProps) => {
             ))}
           </Box>
           <Card.Divider />
-          {_.map(arrTypeForm, (item) => (
-            <Box
-              width="100%"
-              key={item.id}
-              className={st(classes.contentTypeSelect, {
-                typeSelect: item.id,
-                isShow: item.isSelect,
-              })}
-            >
-              {item.name === "Start From Scratch" && item.isSelect === true && (
-                <Card.Content>
-                  <Box direction="vertical" className={st(classes.formBlank)}>
-                    <Add className={st(classes.iconAdd)} />
-                    <Box className={st(classes.textOne)}>
-                      Start from scratch
-                    </Box>
-                    <Box>Build your own form from scratch.</Box>
-                  </Box>
-                </Card.Content>
-              )}
-              {item.name === "Use Template" && item.isSelect === true && (
-                <Card.Content>
-                  <Box
-                    direction="horizontal"
-                    // className={st(classes.useTemplate)}
-                  >
+
+          <Box
+            width="100%"
+            className={st(classes.contentTypeSelect, {
+              typeSelect:
+                (nameTypeSelect === "Start From Scratch" && 1) ||
+                (nameTypeSelect === "Use Template" && 2) ||
+                (nameTypeSelect === "Duplicate Existing" && 3) ||
+                (nameTypeSelect === "Import Form" && 4),
+            })}
+          >
+            {nameTypeSelect === "Start From Scratch" && (
+              <Card.Content>
+                <Box direction="vertical" className={st(classes.formBlank)}>
+                  <Add className={st(classes.iconAdd)} />
+                  <Box className={st(classes.textOne)}>Start from scratch</Box>
+                  <Box>Build your own form from scratch.</Box>
+                </Box>
+              </Card.Content>
+            )}
+
+            {nameTypeSelect === "Use Template" && (
+              <Card.Content>
+                <ItemForm
+                  handleClickSelect={handleClickSelect}
+                  arrData={arrTemplate}
+                  typeSelect="Template"
+                />
+              </Card.Content>
+            )}
+
+            {nameTypeSelect === "Duplicate Existing" && (
+              <Card.Content>
+                <ItemForm
+                  handleClickSelect={handleClickSelect}
+                  arrData={arrDataNewForm}
+                  typeSelect="Duplicate"
+                />
+              </Card.Content>
+            )}
+
+            {nameTypeSelect === "Import Form" && (
+              <Card.Content>
+                <Dropzone onDrop={() => {}}>
+                  <Dropzone.Overlay>
                     <Box
-                      width="25%"
                       direction="vertical"
-                      className={st(classes.templateLeft)}
+                      height="455"
+                      boxSizing="border-box"
+                      border="dashed 1px"
+                      borderRadius="6px"
+                      borderColor="B20"
                     >
-                      <Box className={st(classes.search)}>
-                        <Search size="medium" placeholder="Search" />
-                      </Box>
-                      <Box
-                        direction="vertical"
-                        className={st(classes.listTemplate)}
+                      <AddItem theme="filled" size="large">
+                        Drop your images here
+                      </AddItem>
+                    </Box>
+                  </Dropzone.Overlay>
+                  <Dropzone.Content>
+                    <Box
+                      direction="vertical"
+                      border="dashed 1px"
+                      boxSizing="border-box"
+                      borderRadius="6px"
+                      padding="65px"
+                      borderColor="B20"
+                    >
+                      <EmptyState
+                        title="Drag your images here"
+                        subtitle="Or upload images from your computer"
+                        image="https://www.wix-style-react.com/storybook/generic_add_item_illustration.svg"
                       >
-                        {_.map(arrTemplate, (item) => (
-                          <Box
-                            className={st(classes.itemList, {
-                              isSelected: item.isSelect,
-                            })}
-                            onClick={() =>
-                              handleClickSelect("ARR_TEMPLATE", item.id)
-                            }
-                          >
-                            {item.name}
-                          </Box>
-                        ))}
-                      </Box>
+                        <FileUpload onChange={handleOnChangeUpload}>
+                          {({ openFileUploadDialog }) => (
+                            <TextButton
+                              onClick={openFileUploadDialog}
+                              prefixIcon={<Upload />}
+                            >
+                              {inputFile !== "" ? inputFile : "Upload Images"}
+                            </TextButton>
+                          )}
+                        </FileUpload>
+                      </EmptyState>
                     </Box>
-                    <Box width="75%" className={st(classes.templateRight)}>
-                      {arrTemplate &&
-                        _.map(
-                          arrTemplate,
-                          (item) =>
-                            item.isSelect === true && (
-                              <Image
-                                src={item?.url_image}
-                                alt={item?.url_image}
-                              />
-                            )
-                        )}
-                    </Box>
-                  </Box>
-                </Card.Content>
-              )}
-              {item.name === "Duplicate Existing" && item.isSelect === true && (
-                <Card.Content>3</Card.Content>
-              )}
-              {item.name === "Import Form" && item.isSelect === true && (
-                <Card.Content>4</Card.Content>
-              )}
-            </Box>
-          ))}
+                  </Dropzone.Content>
+                </Dropzone>
+              </Card.Content>
+            )}
+          </Box>
         </Card>
-        {/* </Box> */}
       </Page.Content>
     </Page>
   );

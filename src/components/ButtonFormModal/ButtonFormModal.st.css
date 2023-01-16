@@ -36,9 +36,16 @@ Button.btnOpenModal:hover {
     justify-content: space-between;
 }
 
+.inputFormModal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 12px;
+}
+
 .actionBtnModal {
     display: flex;
     justify-content: end;
-
     gap: 12px;
 }
