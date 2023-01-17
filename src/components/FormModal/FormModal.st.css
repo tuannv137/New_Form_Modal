@@ -1,6 +1,5 @@
-@st-import [B10, B30, B40, D10, D10-66, D40, D50, D65, D70, D80] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+@st-import [B10, B30] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
 @st-import Image from "mgz-ui/dist/src/Image/Image.st.css";
-@st-import EmptyState from "mgz-ui/dist/src/EmptyState/EmptyState.st.css";
 
 .root {
     overflow: hidden;
@@ -8,6 +7,11 @@
 
 .root > div > div > div > div:nth-child(2) {
     padding: 30px 48px !important;
+}
+
+.root > div > div > div > div > div > div:nth-child(2) {
+    height: 0;
+    padding: 0;
 }
 
 .cardFormModal {
@@ -51,7 +55,7 @@
 .contentTypeSelect > div {
     width: 100%;
     padding: 0;
-    min-height: 455px;
+    height: 455px;
     position: relative;
 }
 
@@ -99,7 +103,3 @@
 .textOne {
     font-weight: 700 !important;
 }
-
-/* EmptyState {
-    padding: 25px !important;
-} */

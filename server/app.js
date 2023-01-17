@@ -8,6 +8,12 @@ const app = express();
 const port = 3006;
 app.use(cors());
 
+// {
+//   status: true | false
+//   message: 'aaaaa',
+//   redirect_url: ''
+// }
+
 app.use(bodyParser.json());
 
 app.get("/get-form-template", (req, res) => {
@@ -42,6 +48,7 @@ app.post("/post-new-form", (req, res) => {
       id: data.id,
       name: data.name,
       type: data.type,
+      fieldForm: data.fieldForm,
     };
 
     const arrForm = _.cloneDeep(data.arrForm);

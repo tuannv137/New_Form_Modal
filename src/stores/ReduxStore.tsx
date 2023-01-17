@@ -4,9 +4,11 @@ import type { ActionTypes } from "./ActionTypes";
 const initState = {
   dataTemplate: [],
   arrDataNewForm: [],
+  arrFormSelect: [],
   nameTypeSelectForm: "Start From Scratch",
   inputNameFormStore: "",
   inputFile: "",
+  inputSearchForm: "",
 };
 
 const AppStore = createSlice<InitDataType, ActionTypes>({
@@ -15,6 +17,10 @@ const AppStore = createSlice<InitDataType, ActionTypes>({
   reducers: {
     initArrDataTemplate: (state, action) => {
       state.dataTemplate = action.payload;
+    },
+
+    initArrFormSelect: (state, action) => {
+      state.arrFormSelect = action.payload;
     },
 
     newFormModal: (state, action) => {
@@ -32,15 +38,21 @@ const AppStore = createSlice<InitDataType, ActionTypes>({
     setInputFile: (state, action) => {
       state.inputFile = action.payload;
     },
+
+    setInputSearchForm: (state, action) => {
+      state.inputSearchForm = action.payload;
+    },
   },
 });
 
 export const {
   initArrDataTemplate,
+  initArrFormSelect,
   newFormModal,
   setNameTypeSelectForm,
   setInputNameFormStore,
   setInputFile,
+  setInputSearchForm,
 } = AppStore.actions;
 
 export default AppStore.reducer;

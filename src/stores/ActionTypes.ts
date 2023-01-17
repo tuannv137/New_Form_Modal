@@ -6,6 +6,11 @@ export type ActionTypes = {
     action: PayloadAction<Data[]>
   ) => void;
 
+  initArrFormSelect: (
+    state: InitDataType,
+    action: PayloadAction<Data[]>
+  ) => void;
+
   newFormModal: (state: InitDataType, action: PayloadAction<Data[]>) => void;
 
   setNameTypeSelectForm: (
@@ -19,4 +24,9 @@ export type ActionTypes = {
   ) => void;
 
   setInputFile: (state: InitDataType, action: PayloadAction<string>) => void;
+
+  setInputSearchForm: (
+    state: InitDataType,
+    action: PayloadAction<string>
+  ) => void;
 };

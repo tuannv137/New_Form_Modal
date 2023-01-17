@@ -1,8 +1,10 @@
 @st-import Button from "mgz-ui/dist/src/Button/Button.st.css";
-@st-import [O00,O10,C2, D80, R00, R10] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+@st-import [C2, D80, R00, R10] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
 
 :global(div) {
     font-family: 'Wix Madefor Text', sans-serif !important;
+    outline: none !important;
+    font-size: 14px;
 }
 
 :global(span) {
@@ -40,12 +42,12 @@ Button.btnOpenModal:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-
     gap: 12px;
 }
 
 .actionBtnModal {
     display: flex;
     justify-content: end;
+    align-items: center;
     gap: 12px;
 }

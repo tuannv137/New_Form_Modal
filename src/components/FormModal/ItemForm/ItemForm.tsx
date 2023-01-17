@@ -1,36 +1,67 @@
 import _ from "lodash";
+import { useDispatch, useSelector } from "react-redux";
 import Box from "mgz-ui/dist/src/Box";
-import Search from "mgz-ui/dist/src/Search";
+import DropdownLayout from "mgz-ui/dist/src/DropdownLayout";
 import Image from "mgz-ui/dist/src/Image";
+import Search from "mgz-ui/dist/src/Search";
+import { KeyboardEvent, useState } from "react";
+import { setInputSearchForm } from "../../../stores/ReduxStore";
 import { st, classes } from "./ItemForm.st.css";
-import { ChangeEvent, KeyboardEvent, useState } from "react";
 
 export type ItemFormProps = {
   handleClickSelect?: (type?: string, id?: string, typeSelect?: string) => void;
-  arrData?: Data[];
+  arrDataNewForm?: Data[];
+  arrTemplate?: Data[];
   typeSelect?: "Template" | "Duplicate";
 };
 
 const ItemForm = ({
   handleClickSelect,
-  arrData,
+  arrDataNewForm,
+  arrTemplate,
   typeSelect,
 }: ItemFormProps) => {
+  const data = useSelector(
+    (state: { new_form_modal: InitDataType }) => state.new_form_modal
+  );
+  const arrFormSelect = data.arrFormSelect;
   const [inputSearch, setInputSearch] = useState("");
+  const inputSearchForm = data.inputSearchForm;
+  let arrData: Data[] | undefined = [];
 
-  if (inputSearch !== "") {
-    arrData = _.filter(arrData, (item) =>
-      _.includes(_.toLower(item.name), _.toLower(inputSearch))
+  const dispatch = useDispatch();
+
+  if (inputSearchForm !== "") {
+    arrData = _.filter(
+      typeSelect === "Template" ? arrTemplate : arrDataNewForm,
+      (item) => _.includes(_.toLower(item.name), _.toLower(inputSearchForm))
     );
+  } else {
+    arrData = typeSelect === "Template" ? arrTemplate : arrDataNewForm;
   }
+
+  const handleOnClearInput = () => {
+    setInputSearch("");
+  };
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault();
-      setInputSearch(e.target.value);
+      dispatch(setInputSearchForm(inputSearch));
     }
   };
 
+  const options: any[] = _.map(arrData, (item) => ({
+    id: item.id,
+    value: item.name,
+  }));
+
+  const handleSelectedId = (id?: string) => {
+    handleClickSelect && handleClickSelect("ARR_TEMPLATE", id);
+  };
+  const isSelect =
+    arrFormSelect && _.find(arrData, (item) => item.id === arrFormSelect[0]?.id)
+      ? true
+      : false;
   return (
     <Box direction="horizontal" className={st(classes.root)}>
       <Box direction="vertical" className={st(classes.left)}>
@@ -39,28 +70,22 @@ const ItemForm = ({
             size="medium"
             placeholder="Search"
             value={inputSearch}
-            // onChange={(e) => setInputSearch(e.target.value)}
-            tabIndex={-1}
-            onClear={() => setInputSearch("")}
+            onChange={(e) => setInputSearch(e.target.value)}
+            onClear={handleOnClearInput}
             onKeyDown={handleKeyDown}
           />
         </Box>
         <Box direction="vertical" className={st(classes.listArrData)}>
           {_.size(arrData) > 0 ? (
-            _.map(arrData, (item) => (
-              <Box
-                className={st(classes.itemList, {
-                  isSelected: item.isSelect,
-                })}
-                onClick={() =>
-                  _.isFunction(handleClickSelect) &&
-                  handleClickSelect("ARR_TEMPLATE", item.id)
-                }
-                key={item.id}
-              >
-                {item.name}
-              </Box>
-            ))
+            <DropdownLayout
+              className={st(classes.itemList)}
+              maxHeightPixels="415px"
+              visible
+              inContainer
+              options={options}
+              selectedId={arrFormSelect && arrFormSelect[0]?.id}
+              onSelect={({ id }) => handleSelectedId(_.toString(id))}
+            />
           ) : (
             <Box direction="vertical" className={st(classes.dataNotFound)}>
               <Box>{`No results for “${inputSearch}”`}</Box>
@@ -71,17 +96,22 @@ const ItemForm = ({
           )}
         </Box>
       </Box>
-      <Box className={st(classes.right)}>
-        {_.some(arrData, ["isSelect", true]) ? (
+      <Box
+        className={st(classes.right, {
+          isHaveSelect: !isSelect,
+        })}
+      >
+        {isSelect ? (
           <>
             {_.map(
               arrData,
               (item) =>
-                item.isSelect === true && (
-                  <Box>
+                arrFormSelect &&
+                item.id === arrFormSelect[0]?.id && (
+                  <Box key={item.id}>
                     <Image
-                      src={item?.url_image}
-                      alt={item?.name}
+                      src={item.url_image}
+                      alt={item.name}
                       fit="contain"
                       className={st(classes.image)}
                     />
@@ -90,9 +120,9 @@ const ItemForm = ({
             )}
           </>
         ) : (
-          <Box className={st(classes.pleaseSelectForm)}>
-            {"Select Form Template To View"}
-          </Box>
+          `Select Form  ${
+            typeSelect === "Template" ? "Template" : "Duplicate"
+          } To View`
         )}
       </Box>
     </Box>

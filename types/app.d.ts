@@ -1,9 +1,11 @@
 declare interface InitDataType {
   dataTemplate?: Data[];
-  arrDataNewForm?: DataNewForm[];
+  arrDataNewForm?: Data[];
+  arrFormSelect?: Data[];
   nameTypeSelectForm?: string;
   inputNameFormStore?: string;
   inputFile?: string;
+  inputSearchForm?: string;
 }
 
 declare interface Data {
@@ -12,4 +14,5 @@ declare interface Data {
   isSelect?: boolean;
   url_image?: string;
   type?: string;
+  fieldForm?: (Data | undefined)[];
 }

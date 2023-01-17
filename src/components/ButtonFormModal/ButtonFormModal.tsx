@@ -4,13 +4,13 @@ import _ from "lodash";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import Button from "mgz-ui/dist/src/Button";
-import Text from "mgz-ui/dist/src/Text";
-import Modal from "mgz-ui/dist/src/Modal";
-import Loader from "mgz-ui/dist/src/Loader";
 import CustomModalLayout from "mgz-ui/dist/src/CustomModalLayout";
+import Modal from "mgz-ui/dist/src/Modal";
 import Input from "mgz-ui/dist/src/Input";
+import Loader from "mgz-ui/dist/src/Loader";
 import PageForm from "../FormModal/FormModal";
-import { initArrDataTemplate, newFormModal } from "../../stores/ReduxStore";
+import Text from "mgz-ui/dist/src/Text";
+import { newFormModal } from "../../stores/ReduxStore";
 import { st, classes } from "./ButtonFormModal.st.css";
 
 export type ButtonFormModalProps = {
@@ -22,15 +22,15 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
     (state: { new_form_modal: InitDataType }) => state.new_form_modal
   );
   const nameTypeSelect = data.nameTypeSelectForm;
-  const inputFile = data.inputFile;
   const inputNameFormStore: string | undefined = data.inputNameFormStore;
-  let dataTemplate = data.dataTemplate;
-
+  const arrFormSelect = data.arrFormSelect;
   const [isOpenModal, setOpenModal] = useState<boolean | undefined>(openModal);
   const [inputNameForm, setInputNameForm] = useState<string | undefined>("");
   const [message, setMessage] = useState<string>("");
   const [isMessage, setIsMessage] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isSelect = !_.isEmpty(arrFormSelect) ? true : false;
+
   const dispatch = useDispatch();
 
   const openFormModal = () => {
@@ -46,6 +46,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
       id: uuidv4(),
       name: inputNameForm,
       type: nameTypeSelect,
+      fieldForm: nameTypeSelect ? arrFormSelect : [],
     };
 
     const arrForm: Data[] | undefined = _.cloneDeep(data.arrDataNewForm);
@@ -57,22 +58,53 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
 
     if (response.data.code === 0) {
       if (!_.isUndefined(arrForm)) {
-        arrForm.push(newForm);
+        if (nameTypeSelect !== "Import Form") {
+          setIsLoading(true);
 
-        setIsLoading(true);
+          setTimeout(() => {
+            setIsLoading(false);
 
-        setTimeout(() => {
-          setIsLoading(false);
+            setMessage("abc");
 
-          setMessage(response.data.message);
-        }, 1000);
+            setIsMessage(false);
+          }, 1000);
+        }
+        if (!isSelect) {
+          if (
+            nameTypeSelect === "Use Template" ||
+            nameTypeSelect === "Duplicate Existing"
+          ) {
+            setIsLoading(true);
 
-        dispatch(newFormModal(arrForm));
+            setTimeout(() => {
+              setIsLoading(false);
+
+              setMessage(
+                `Please! Select form ${
+                  (nameTypeSelect === "Use Template" && "template") ||
+                  (nameTypeSelect === "Duplicate Existing" && "duplicate")
+                } to view`
+              );
+
+              setIsMessage(false);
+            }, 1000);
+          }
+        } else {
+          newForm && arrForm.push(newForm);
+
+          setIsLoading(true);
+
+          setTimeout(() => {
+            setIsLoading(false);
+            setMessage(response.data.message);
+          }, 1000);
+
+          dispatch(newFormModal(arrForm));
+        }
       }
       setIsMessage(true);
     } else {
       setIsMessage(false);
-
       setIsLoading(true);
 
       setTimeout(() => {
@@ -80,9 +112,8 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
         setMessage(response.data.message);
       }, 1000);
     }
-    // setInputNameForm("");
   };
-
+  console.log(nameTypeSelect);
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleCreateForm();
@@ -93,18 +124,6 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
       setInputNameForm(inputNameFormStore);
     }
   }, [inputNameFormStore]);
-
-  useEffect(() => {
-    if (inputNameForm === "") {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      dataTemplate = _.map(dataTemplate, (item) => ({
-        ...item,
-        isSelect: false,
-      }));
-
-      dispatch(initArrDataTemplate(dataTemplate));
-    }
-  }, [inputNameForm, dispatch]);
 
   return (
     <div className={st(classes.root)}>
@@ -134,6 +153,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
                 {message !== "" && !isLoading && (
                   <Text skin={isMessage ? "success" : "error"}>{message}</Text>
                 )}
+
                 {message === "" && (
                   <Text skin={isMessage ? "success" : "error"}>{message}</Text>
                 )}
@@ -146,7 +166,13 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
                 <Button
                   size="small"
                   onClick={handleCreateForm}
-                  disabled={inputNameForm === "" ? true : false}
+                  // disabled={
+                  //   inputNameForm === "" ||
+                  //   (isSelect === false && nameTypeSelect === "Use Template") ||
+                  //   (nameTypeSelect === "Import Form" && inputFile === "")
+                  //     ? true
+                  //     : false
+                  // }
                 >
                   {isLoading ? <Loader size="tiny" /> : "Create Form"}
                 </Button>

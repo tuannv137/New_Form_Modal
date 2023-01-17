@@ -2,17 +2,18 @@ import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
 import _ from "lodash";
 import { useDispatch, useSelector } from "react-redux";
-import Page from "mgz-ui/dist/src/Page";
-import Card from "mgz-ui/dist/src/Card";
-import Box from "mgz-ui/dist/src/Box";
 import AddItem from "mgz-ui/dist/src/AddItem";
+import Box from "mgz-ui/dist/src/Box";
+import Card from "mgz-ui/dist/src/Card";
 import Dropzone from "mgz-ui/dist/src/Dropzone";
-import FileUpload from "mgz-ui/dist/src/FileUpload";
 import EmptyState from "mgz-ui/dist/src/EmptyState";
+import FileUpload from "mgz-ui/dist/src/FileUpload";
+import Page from "mgz-ui/dist/src/Page";
 import TextButton from "mgz-ui/dist/src/TextButton";
 import { Add, Upload } from "@wix/wix-ui-icons-common";
 import {
   initArrDataTemplate,
+  initArrFormSelect,
   setInputFile,
   setInputNameFormStore,
   setNameTypeSelectForm,
@@ -28,6 +29,7 @@ const FormModal = () => {
   );
   const nameTypeSelect = data.nameTypeSelectForm;
   const arrDataNewForm = data.arrDataNewForm;
+  let arrFormSelect = data.arrFormSelect;
   const inputFile = data.inputFile;
 
   const [arrTypeForm, setArrTypeFrom] = useState<
@@ -57,18 +59,27 @@ const FormModal = () => {
               : { ...item, isSelect: false }
           )
         );
+        arrFormSelect && dispatch(initArrFormSelect([]));
         typeSelect && dispatch(setNameTypeSelectForm(typeSelect));
       } else {
-        arrTemplate = _.map(arrTemplate, (item) =>
-          item.id === id
-            ? { ...item, isSelect: true }
-            : { ...item, isSelect: false }
+        _.forEach(
+          nameTypeSelect === "Use Template" ? arrTemplate : arrDataNewForm,
+          (item) => {
+            if (item.id === id) {
+              arrFormSelect = [item];
+            }
+          }
         );
-        if (nameTypeSelect === "Use Template") {
+
+        if (
+          nameTypeSelect === "Use Template" ||
+          nameTypeSelect === "Duplicate Existing"
+        ) {
           const name = _.find(arrTemplate, { id });
           name && name.name && dispatch(setInputNameFormStore(name?.name));
         }
-        dispatch(initArrDataTemplate(arrTemplate));
+
+        arrFormSelect && dispatch(initArrFormSelect(arrFormSelect));
       }
     }
   };
@@ -87,12 +98,13 @@ const FormModal = () => {
     getArrTemplate();
   }, [getArrTemplate]);
 
-  const handleOnChangeUpload = (e: any) => {
-    e && e[0] && dispatch(setInputFile(e[0].name));
+  const handleOnChangeUpload = (e: FileList) => {
+    dispatch(setInputFile(e[0].name));
   };
 
   return (
     <Page className={st(classes.root)} maxWidth={940}>
+      <Page.Header title="" subtitle="" />
       <Page.Content>
         <Card className={st(classes.cardFormModal)}>
           <Box className={st(classes.nameTypeSelect)}>
@@ -137,7 +149,7 @@ const FormModal = () => {
               <Card.Content>
                 <ItemForm
                   handleClickSelect={handleClickSelect}
-                  arrData={arrTemplate}
+                  arrTemplate={arrTemplate}
                   typeSelect="Template"
                 />
               </Card.Content>
@@ -147,7 +159,7 @@ const FormModal = () => {
               <Card.Content>
                 <ItemForm
                   handleClickSelect={handleClickSelect}
-                  arrData={arrDataNewForm}
+                  arrDataNewForm={arrDataNewForm}
                   typeSelect="Duplicate"
                 />
               </Card.Content>
