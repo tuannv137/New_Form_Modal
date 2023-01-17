@@ -15,7 +15,12 @@ export type ActionTypes = {
 
   setNameTypeSelectForm: (
     state: InitDataType,
-    action: PayloadAction<string>
+    action: PayloadAction<
+      | "Start From Scratch"
+      | "Use Template"
+      | "Duplicate Existing"
+      | "Import Form"
+    >
   ) => void;
 
   setInputNameFormStore: (

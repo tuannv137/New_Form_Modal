@@ -9,7 +9,15 @@ import { setInputSearchForm } from "../../../stores/ReduxStore";
 import { st, classes } from "./ItemForm.st.css";
 
 export type ItemFormProps = {
-  handleClickSelect?: (type?: string, id?: string, typeSelect?: string) => void;
+  handleClickSelect?: (
+    type?: string,
+    id?: string,
+    typeSelect?:
+      | "Start From Scratch"
+      | "Use Template"
+      | "Duplicate Existing"
+      | "Import Form"
+  ) => void;
   arrDataNewForm?: Data[];
   arrTemplate?: Data[];
   typeSelect?: "Template" | "Duplicate";
@@ -56,12 +64,11 @@ const ItemForm = ({
   }));
 
   const handleSelectedId = (id?: string) => {
-    handleClickSelect && handleClickSelect("ARR_TEMPLATE", id);
+    handleClickSelect && handleClickSelect("ARR_OTHER", id);
   };
-  const isSelect =
-    arrFormSelect && _.find(arrData, (item) => item.id === arrFormSelect[0]?.id)
-      ? true
-      : false;
+
+  const isSelect = _.some(arrData, ["isSelect", true]);
+
   return (
     <Box direction="horizontal" className={st(classes.root)}>
       <Box direction="vertical" className={st(classes.left)}>
@@ -98,7 +105,7 @@ const ItemForm = ({
       </Box>
       <Box
         className={st(classes.right, {
-          isHaveSelect: !isSelect,
+          isHaveSelect: _.some(arrData, ["isSelect", true]),
         })}
       >
         {isSelect ? (
@@ -107,7 +114,7 @@ const ItemForm = ({
               arrData,
               (item) =>
                 arrFormSelect &&
-                item.id === arrFormSelect[0]?.id && (
+                item.isSelect === true && (
                   <Box key={item.id}>
                     <Image
                       src={item.url_image}

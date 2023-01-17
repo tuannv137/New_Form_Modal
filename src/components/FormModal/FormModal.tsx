@@ -14,6 +14,7 @@ import { Add, Upload } from "@wix/wix-ui-icons-common";
 import {
   initArrDataTemplate,
   initArrFormSelect,
+  newFormModal,
   setInputFile,
   setInputNameFormStore,
   setNameTypeSelectForm,
@@ -33,7 +34,15 @@ const FormModal = () => {
   const inputFile = data.inputFile;
 
   const [arrTypeForm, setArrTypeFrom] = useState<
-    { id?: string; isSelect?: boolean; name?: string }[]
+    {
+      id?: string;
+      isSelect?: boolean;
+      name?:
+        | "Start From Scratch"
+        | "Use Template"
+        | "Duplicate Existing"
+        | "Import Form";
+    }[]
   >([
     { id: "1", isSelect: true, name: "Start From Scratch" },
     { id: "2", isSelect: false, name: "Use Template" },
@@ -48,7 +57,11 @@ const FormModal = () => {
   const handleClickSelect = (
     type?: string,
     id?: string,
-    typeSelect?: string
+    typeSelect?:
+      | "Start From Scratch"
+      | "Use Template"
+      | "Duplicate Existing"
+      | "Import Form"
   ) => {
     if (id) {
       if (type === "ARR_TYPE_SELECT") {
@@ -59,27 +72,31 @@ const FormModal = () => {
               : { ...item, isSelect: false }
           )
         );
-        arrFormSelect && dispatch(initArrFormSelect([]));
+        // arrFormSelect && dispatch(initArrFormSelect([]));
         typeSelect && dispatch(setNameTypeSelectForm(typeSelect));
       } else {
-        _.forEach(
+        const arrSelect = _.map(
           nameTypeSelect === "Use Template" ? arrTemplate : arrDataNewForm,
-          (item) => {
-            if (item.id === id) {
-              arrFormSelect = [item];
-            }
-          }
+          (item) =>
+            item.id === id
+              ? { ...item, isSelect: true }
+              : { ...item, isSelect: false }
         );
 
         if (
           nameTypeSelect === "Use Template" ||
           nameTypeSelect === "Duplicate Existing"
         ) {
-          const name = _.find(arrTemplate, { id });
+          const name = _.find(
+            nameTypeSelect === "Use Template" ? arrTemplate : arrDataNewForm,
+            { id }
+          );
           name && name.name && dispatch(setInputNameFormStore(name?.name));
         }
-
-        arrFormSelect && dispatch(initArrFormSelect(arrFormSelect));
+        nameTypeSelect === "Duplicate Existing" &&
+          dispatch(newFormModal(arrSelect));
+        nameTypeSelect === "Use Template" &&
+          dispatch(initArrDataTemplate(arrSelect));
       }
     }
   };

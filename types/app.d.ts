@@ -2,7 +2,11 @@ declare interface InitDataType {
   dataTemplate?: Data[];
   arrDataNewForm?: Data[];
   arrFormSelect?: Data[];
-  nameTypeSelectForm?: string;
+  nameTypeSelectForm?:
+    | "Start From Scratch"
+    | "Use Template"
+    | "Duplicate Existing"
+    | "Import Form";
   inputNameFormStore?: string;
   inputFile?: string;
   inputSearchForm?: string;

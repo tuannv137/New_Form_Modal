@@ -21,15 +21,20 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
   const data = useSelector(
     (state: { new_form_modal: InitDataType }) => state.new_form_modal
   );
+  const arrDataNewForm = data.arrDataNewForm;
+  const dataTemplate = data.dataTemplate;
   const nameTypeSelect = data.nameTypeSelectForm;
   const inputNameFormStore: string | undefined = data.inputNameFormStore;
-  const arrFormSelect = data.arrFormSelect;
   const [isOpenModal, setOpenModal] = useState<boolean | undefined>(openModal);
   const [inputNameForm, setInputNameForm] = useState<string | undefined>("");
   const [message, setMessage] = useState<string>("");
   const [isMessage, setIsMessage] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const isSelect = !_.isEmpty(arrFormSelect) ? true : false;
+  const isSelect = _.some(
+    nameTypeSelect === "Use Template" ? dataTemplate : arrDataNewForm,
+    ["isSelect", true]
+  );
+  console.log(isSelect, arrDataNewForm);
 
   const dispatch = useDispatch();
 
@@ -46,7 +51,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
       id: uuidv4(),
       name: inputNameForm,
       type: nameTypeSelect,
-      fieldForm: nameTypeSelect ? arrFormSelect : [],
+      fieldForm: [],
     };
 
     const arrForm: Data[] | undefined = _.cloneDeep(data.arrDataNewForm);
@@ -78,15 +83,13 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
 
             setTimeout(() => {
               setIsLoading(false);
-
+              setIsMessage(false);
               setMessage(
                 `Please! Select form ${
                   (nameTypeSelect === "Use Template" && "template") ||
                   (nameTypeSelect === "Duplicate Existing" && "duplicate")
                 } to view`
               );
-
-              setIsMessage(false);
             }, 1000);
           }
         } else {
@@ -95,6 +98,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
           setIsLoading(true);
 
           setTimeout(() => {
+            setIsMessage(true);
             setIsLoading(false);
             setMessage(response.data.message);
           }, 1000);
@@ -102,18 +106,17 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
           dispatch(newFormModal(arrForm));
         }
       }
-      setIsMessage(true);
     } else {
-      setIsMessage(false);
       setIsLoading(true);
 
       setTimeout(() => {
         setIsLoading(false);
+        setIsMessage(false);
         setMessage(response.data.message);
       }, 1000);
     }
   };
-  console.log(nameTypeSelect);
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleCreateForm();

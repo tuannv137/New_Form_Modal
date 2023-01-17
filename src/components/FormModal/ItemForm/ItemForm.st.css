@@ -45,18 +45,20 @@
 
 .right {
     -st-states: isHaveSelect;
-    padding: 24px 48px;
-    height: 100%;
-    overflow-y: auto;
-    max-height: 455px;
-    width: 615px;
-}
-
-.right:isHaveSelect {
     height: 455px;
     justify-content: center;
     align-items: center;
     font-weight: 700;
+       width: 615px;
+}
+
+.right:isHaveSelect {
+
+        padding: 24px 48px;
+    height: 100%;
+    overflow-y: auto;
+    max-height: 455px;
+ 
 }
 
 .right > div {
