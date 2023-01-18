@@ -1,25 +1,26 @@
-import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
-import _ from "lodash";
+import { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import _ from "lodash";
 import AddItem from "mgz-ui/dist/src/AddItem";
 import Box from "mgz-ui/dist/src/Box";
 import Card from "mgz-ui/dist/src/Card";
+import Dropdown from "mgz-ui/dist/src/Dropdown";
 import Dropzone from "mgz-ui/dist/src/Dropzone";
 import EmptyState from "mgz-ui/dist/src/EmptyState";
 import FileUpload from "mgz-ui/dist/src/FileUpload";
 import Page from "mgz-ui/dist/src/Page";
 import TextButton from "mgz-ui/dist/src/TextButton";
-import { Add, Upload } from "@wix/wix-ui-icons-common";
+import Text from "mgz-ui/dist/src/Text";
+import Upload from "wix-ui-icons-common/Upload";
+import Add from "wix-ui-icons-common/Add";
 import {
   initArrDataTemplate,
-  initArrFormSelect,
   newFormModal,
   setInputFile,
   setInputNameFormStore,
   setNameTypeSelectForm,
 } from "../../stores/ReduxStore";
-import ItemForm from "./ItemForm/ItemForm";
+import FormTemplate from "./FormTemplate/FormTemplate";
 import { st, classes } from "./FormModal.st.css";
 
 export type FormModalProps = {};
@@ -29,10 +30,9 @@ const FormModal = () => {
     (state: { new_form_modal: InitDataType }) => state.new_form_modal
   );
   const nameTypeSelect = data.nameTypeSelectForm;
-  const arrDataNewForm = data.arrDataNewForm;
-  let arrFormSelect = data.arrFormSelect;
-  const inputFile = data.inputFile;
-
+  const dataNewForm = data.dataNewForm;
+  const objFile = data.objFile;
+  const arrTemplate = data.dataTemplate;
   const [arrTypeForm, setArrTypeFrom] = useState<
     {
       id?: string;
@@ -44,79 +44,68 @@ const FormModal = () => {
         | "Import Form";
     }[]
   >([
-    { id: "1", isSelect: true, name: "Start From Scratch" },
+    { id: "1", isSelect: false, name: "Start From Scratch" },
     { id: "2", isSelect: false, name: "Use Template" },
     { id: "3", isSelect: false, name: "Duplicate Existing" },
     { id: "4", isSelect: false, name: "Import Form" },
   ]);
 
-  let arrTemplate = data.dataTemplate;
-
   const dispatch = useDispatch();
 
-  const handleClickSelect = (
-    type?: string,
-    id?: string,
-    typeSelect?:
-      | "Start From Scratch"
-      | "Use Template"
-      | "Duplicate Existing"
-      | "Import Form"
-  ) => {
+  useEffect(() => {
+    setArrTypeFrom((preState) =>
+      _.map(preState, (item) =>
+        "type-" + item.id === nameTypeSelect
+          ? { ...item, isSelect: true }
+          : { ...item, isSelect: false }
+      )
+    );
+  }, [nameTypeSelect]);
+
+  const handleClickSelect = (type?: string, id?: string) => {
     if (id) {
       if (type === "ARR_TYPE_SELECT") {
-        setArrTypeFrom(
-          _.map(arrTypeForm, (item) =>
-            item.id === id
-              ? { ...item, isSelect: true }
-              : { ...item, isSelect: false }
-          )
-        );
-        // arrFormSelect && dispatch(initArrFormSelect([]));
-        typeSelect && dispatch(setNameTypeSelectForm(typeSelect));
+        const typeSelect = "type-" + id;
+        dispatch(setNameTypeSelectForm(typeSelect));
       } else {
         const arrSelect = _.map(
-          nameTypeSelect === "Use Template" ? arrTemplate : arrDataNewForm,
+          nameTypeSelect === "type-2" ? arrTemplate : dataNewForm,
           (item) =>
             item.id === id
               ? { ...item, isSelect: true }
               : { ...item, isSelect: false }
         );
 
-        if (
-          nameTypeSelect === "Use Template" ||
-          nameTypeSelect === "Duplicate Existing"
-        ) {
-          const name = _.find(
-            nameTypeSelect === "Use Template" ? arrTemplate : arrDataNewForm,
-            { id }
-          );
+        if (nameTypeSelect === "type-2") {
+          const name = _.find(arrTemplate, { id });
           name && name.name && dispatch(setInputNameFormStore(name?.name));
         }
-        nameTypeSelect === "Duplicate Existing" &&
-          dispatch(newFormModal(arrSelect));
-        nameTypeSelect === "Use Template" &&
-          dispatch(initArrDataTemplate(arrSelect));
+        nameTypeSelect === "type-2" && dispatch(initArrDataTemplate(arrSelect));
+        nameTypeSelect === "type-3" && dispatch(newFormModal(arrSelect));
       }
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const getArrTemplate = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3006/get-form-template"
-      );
-      dispatch(initArrDataTemplate(response.data));
-    } catch (error) {}
-  }, [dispatch]);
+  const handleOnChangeUpload = (file?: FileList) => {
+    if (file)
+      if (file[0].size <= 5000) {
+        dispatch(
+          setInputFile({ inputFile: file[0].name, typeFile: file[0].type })
+        );
+      } else {
+        dispatch(setInputFile({ inputFile: file[0].name }));
+      }
+  };
 
-  useEffect(() => {
-    getArrTemplate();
-  }, [getArrTemplate]);
+  const options: any = _.map(dataNewForm, (item) => ({
+    id: item.id,
+    value: item.name,
+  }));
 
-  const handleOnChangeUpload = (e: FileList) => {
-    dispatch(setInputFile(e[0].name));
+  const handleSelectOption = (opt: any) => {
+    if (opt) {
+      handleClickSelect("ARR_NEWFORM", opt.id);
+    }
   };
 
   return (
@@ -127,63 +116,66 @@ const FormModal = () => {
           <Box className={st(classes.nameTypeSelect)}>
             {_.map(arrTypeForm, (item) => (
               <Box key={item.id}>
-                <div
+                <Box
                   className={st(classes.titleType, {
                     isSelected: item.isSelect,
                   })}
-                  onClick={() =>
-                    handleClickSelect("ARR_TYPE_SELECT", item.id, item.name)
-                  }
+                  onClick={() => handleClickSelect("ARR_TYPE_SELECT", item.id)}
                 >
                   <Card.Header title="" subtitle={item.name} />
-                </div>
+                </Box>
               </Box>
             ))}
           </Box>
           <Card.Divider />
 
           <Box
+            gap={10 / 6}
             width="100%"
             className={st(classes.contentTypeSelect, {
               typeSelect:
-                (nameTypeSelect === "Start From Scratch" && 1) ||
-                (nameTypeSelect === "Use Template" && 2) ||
-                (nameTypeSelect === "Duplicate Existing" && 3) ||
-                (nameTypeSelect === "Import Form" && 4),
+                (nameTypeSelect === "type-1" && 1) ||
+                (nameTypeSelect === "type-2" && 2) ||
+                (nameTypeSelect === "type-3" && 3) ||
+                (nameTypeSelect === "type-4" && 4),
             })}
           >
-            {nameTypeSelect === "Start From Scratch" && (
-              <Card.Content>
+            <Card.Content>
+              {nameTypeSelect === "type-1" && (
                 <Box direction="vertical" className={st(classes.formBlank)}>
-                  <Add className={st(classes.iconAdd)} />
-                  <Box className={st(classes.textOne)}>Start from scratch</Box>
-                  <Box>Build your own form from scratch.</Box>
+                  <Add className={st(classes.iconAdd)} width={69} height={69} />
+                  <Text className={st(classes.textOne)}>
+                    Start from scratch
+                  </Text>
+                  <Text>Build your own form from scratch.</Text>
                 </Box>
-              </Card.Content>
-            )}
+              )}
 
-            {nameTypeSelect === "Use Template" && (
-              <Card.Content>
-                <ItemForm
+              {nameTypeSelect === "type-2" && (
+                <FormTemplate
                   handleClickSelect={handleClickSelect}
                   arrTemplate={arrTemplate}
-                  typeSelect="Template"
                 />
-              </Card.Content>
-            )}
+              )}
 
-            {nameTypeSelect === "Duplicate Existing" && (
-              <Card.Content>
-                <ItemForm
-                  handleClickSelect={handleClickSelect}
-                  arrDataNewForm={arrDataNewForm}
-                  typeSelect="Duplicate"
-                />
-              </Card.Content>
-            )}
+              {nameTypeSelect === "type-3" && (
+                <Box
+                  className={st(classes.typeDuplicate)}
+                  width="100%"
+                  height="100%"
+                >
+                  <Dropdown
+                    className={st(classes.selectItem)}
+                    size="large"
+                    placeholder="Select Form"
+                    options={options}
+                    onSelect={handleSelectOption}
+                    selectedId={_.find(dataNewForm, ["isSelect", true])?.id}
+                  />
+                </Box>
+              )}
 
-            {nameTypeSelect === "Import Form" && (
-              <Card.Content>
+              {nameTypeSelect === "type-4" && (
                 <Dropzone onDrop={() => {}}>
                   <Dropzone.Overlay>
                     <Box
@@ -205,7 +197,7 @@ const FormModal = () => {
                       border="dashed 1px"
                       boxSizing="border-box"
                       borderRadius="6px"
-                      padding="65px"
+                      padding="50px"
                       borderColor="B20"
                     >
                       <EmptyState
@@ -213,22 +205,36 @@ const FormModal = () => {
                         subtitle="Or upload images from your computer"
                         image="https://www.wix-style-react.com/storybook/generic_add_item_illustration.svg"
                       >
-                        <FileUpload onChange={handleOnChangeUpload}>
+                        <FileUpload
+                          onChange={handleOnChangeUpload}
+                          multiple
+                          accept=".json, .csv"
+                        >
                           {({ openFileUploadDialog }) => (
-                            <TextButton
-                              onClick={openFileUploadDialog}
-                              prefixIcon={<Upload />}
-                            >
-                              {inputFile !== "" ? inputFile : "Upload Images"}
-                            </TextButton>
+                            <>
+                              <TextButton
+                                onClick={openFileUploadDialog}
+                                prefixIcon={<Upload />}
+                              >
+                                {objFile?.inputFile !== ""
+                                  ? objFile?.inputFile
+                                  : "Upload Images"}
+                              </TextButton>
+                              <Box paddingTop={2}>
+                                <Text>
+                                  Only JSON and CSV files up to 5 MB are
+                                  supported.
+                                </Text>
+                              </Box>
+                            </>
                           )}
                         </FileUpload>
                       </EmptyState>
                     </Box>
                   </Dropzone.Content>
                 </Dropzone>
-              </Card.Content>
-            )}
+              )}
+            </Card.Content>
           </Box>
         </Card>
       </Page.Content>
@@ -236,4 +242,4 @@ const FormModal = () => {
   );
 };
 
-export default FormModal;
+export default memo(FormModal);

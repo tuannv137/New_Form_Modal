@@ -1,0 +1,33 @@
+@st-import [ B40, D10, D80] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+@st-import DropdownLayout from "mgz-ui/dist/src/DropdownLayout/DropdownLayout.st.css";
+
+.dataNotFound {
+    justify-content: center;
+    align-items: center;
+}
+
+.right {
+    -st-states: isHaveSelect;
+    height: 455px;
+    justify-content: center;
+    align-items: center;
+}
+
+.right:isHaveSelect {
+    padding: 24px 48px;
+    height: 100%;
+    overflow-y: auto;
+    max-height: 455px;
+}
+
+DropdownLayout.listItem > div > div > div > div {
+    height: 100% !important;
+}
+
+DropdownLayout.listItem > div > div > div > div > div > div > div > div {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    color: value(D10);
+    width: 304px;
+}

@@ -6,21 +6,11 @@ export type ActionTypes = {
     action: PayloadAction<Data[]>
   ) => void;
 
-  initArrFormSelect: (
-    state: InitDataType,
-    action: PayloadAction<Data[]>
-  ) => void;
-
   newFormModal: (state: InitDataType, action: PayloadAction<Data[]>) => void;
 
   setNameTypeSelectForm: (
     state: InitDataType,
-    action: PayloadAction<
-      | "Start From Scratch"
-      | "Use Template"
-      | "Duplicate Existing"
-      | "Import Form"
-    >
+    action: PayloadAction<"type-1" | "type-2" | "type-3" | "type-4" | string>
   ) => void;
 
   setInputNameFormStore: (
@@ -28,7 +18,10 @@ export type ActionTypes = {
     action: PayloadAction<string>
   ) => void;
 
-  setInputFile: (state: InitDataType, action: PayloadAction<string>) => void;
+  setInputFile: (
+    state: InitDataType,
+    action: PayloadAction<{ inputFile?: string; typeFile?: string }>
+  ) => void;
 
   setInputSearchForm: (
     state: InitDataType,

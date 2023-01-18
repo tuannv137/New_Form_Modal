@@ -35,19 +35,6 @@ Button.btnOpenModal:hover {
     padding: 18px 0;
     width: 100%;
     display: flex;
-    justify-content: space-between;
-}
-
-.inputFormModal {
-    display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
-    gap: 12px;
-}
-
-.actionBtnModal {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    gap: 12px;
 }

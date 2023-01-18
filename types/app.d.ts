@@ -1,14 +1,9 @@
 declare interface InitDataType {
   dataTemplate?: Data[];
-  arrDataNewForm?: Data[];
-  arrFormSelect?: Data[];
-  nameTypeSelectForm?:
-    | "Start From Scratch"
-    | "Use Template"
-    | "Duplicate Existing"
-    | "Import Form";
+  dataNewForm?: Data[];
+  nameTypeSelectForm?: "type-1" | "type-2" | "type-3" | "type-4" | string;
   inputNameFormStore?: string;
-  inputFile?: string;
+  objFile?: { inputFile?: string; typeFile?: string };
   inputSearchForm?: string;
 }
 
@@ -19,4 +14,5 @@ declare interface Data {
   url_image?: string;
   type?: string;
   fieldForm?: (Data | undefined)[];
+  fileImport?: string;
 }

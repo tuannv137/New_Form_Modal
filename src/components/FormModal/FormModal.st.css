@@ -1,5 +1,4 @@
-@st-import [B10, B30] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
-@st-import Image from "mgz-ui/dist/src/Image/Image.st.css";
+@st-import [B10, B30, D70] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
 
 .root {
     overflow: hidden;
@@ -83,8 +82,6 @@
 }
 
 .iconAdd {
-    width: 69px;
-    height: 69px;
     color: value(B30);
 }
 
@@ -93,13 +90,15 @@
     align-items: center;
 }
 
-.formBlank > div {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 30px;
-    text-align: center;
-}
-
 .textOne {
     font-weight: 700 !important;
+}
+
+.typeDuplicate {
+    justify-content: center;
+    align-items: center;
+}
+
+.selectItem {
+    width: 260px;
 }

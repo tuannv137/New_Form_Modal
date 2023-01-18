@@ -3,11 +3,24 @@ import type { ActionTypes } from "./ActionTypes";
 
 const initState = {
   dataTemplate: [],
-  arrDataNewForm: [],
-  arrFormSelect: [],
-  nameTypeSelectForm: "Start From Scratch",
+  dataNewForm: [
+    {
+      id: "form1",
+      name: "Form1",
+    },
+    {
+      id: "form2",
+      name: "Form2",
+    },
+    {
+      id: "form3",
+      name: "Form3",
+    },
+  ],
+
+  nameTypeSelectForm: "type-1",
   inputNameFormStore: "",
-  inputFile: "",
+  objFile: { inputFile: "", typeFile: "" },
   inputSearchForm: "",
 };
 
@@ -19,12 +32,8 @@ const AppStore = createSlice<InitDataType, ActionTypes>({
       state.dataTemplate = action.payload;
     },
 
-    initArrFormSelect: (state, action) => {
-      state.arrFormSelect = action.payload;
-    },
-
     newFormModal: (state, action) => {
-      state.arrDataNewForm = action.payload;
+      state.dataNewForm = action.payload;
     },
 
     setNameTypeSelectForm: (state, action) => {
@@ -36,7 +45,7 @@ const AppStore = createSlice<InitDataType, ActionTypes>({
     },
 
     setInputFile: (state, action) => {
-      state.inputFile = action.payload;
+      state.objFile = action.payload;
     },
 
     setInputSearchForm: (state, action) => {
@@ -47,7 +56,6 @@ const AppStore = createSlice<InitDataType, ActionTypes>({
 
 export const {
   initArrDataTemplate,
-  initArrFormSelect,
   newFormModal,
   setNameTypeSelectForm,
   setInputNameFormStore,
