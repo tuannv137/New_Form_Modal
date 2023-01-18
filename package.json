@@ -17,9 +17,11 @@
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/jquery": "^3.5.16",
     "@types/node": "^16.11.47",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "@types/react-outside-click-handler": "^1.3.1",
     "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^8.3.4",
     "axios": "^0.27.2",
@@ -33,6 +35,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-js-pagination": "^3.0.3",
+    "react-outside-click-handler": "^1.3.0",
     "react-redux": "^7.2.4",
     "react-scripts": "5.0.1",
     "redux": "^4.1.0",
@@ -42,7 +45,8 @@
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4",
     "wix-storybook-config": "^1.0.2",
-    "wix-storybook-utils": "^4.0.53"
+    "wix-storybook-utils": "^4.0.53",
+    "wix-ui-icons-common": "^2.0.399"
   },
   "devDependencies": {
     "@babel/cli": "~7.16.8",
