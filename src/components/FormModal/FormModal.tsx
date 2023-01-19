@@ -93,7 +93,7 @@ const FormModal = () => {
           setInputFile({ inputFile: file[0].name, typeFile: file[0].type })
         );
       } else {
-        dispatch(setInputFile({ inputFile: file[0].name }));
+        dispatch(setInputFile({ inputFile: file[0].name, typeFile: "" }));
       }
   };
 
@@ -171,10 +171,6 @@ const FormModal = () => {
                     options={options}
                     onSelect={handleSelectOption}
                     selectedId={_.find(dataNewForm, ["isSelect", true])?.id}
-                    popoverProps={{
-                      appendTo: "window",
-                    }}
-                    customInput
                   />
                 </Box>
               )}
@@ -222,7 +218,7 @@ const FormModal = () => {
                               >
                                 {objFile?.inputFile !== ""
                                   ? objFile?.inputFile
-                                  : "Upload Images"}
+                                  : "Upload File"}
                               </TextButton>
                               <Box paddingTop={2}>
                                 <Text>

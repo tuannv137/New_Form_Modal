@@ -39,7 +39,8 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
   const disableBtn =
     inputNameForm === "" ||
     (isSelect === false && nameTypeSelect === "type-2") ||
-    (nameTypeSelect === "type-4" && objFile?.inputFile === "") ||
+    (nameTypeSelect === "type-4" &&
+      (objFile?.inputFile === "" || objFile?.typeFile === "")) ||
     (isSelect === false && nameTypeSelect === "type-3")
       ? true
       : false;
@@ -104,6 +105,12 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
     if (response.data.code === 0) {
       if (disableBtn) {
         setIsMessage(false);
+
+        if (nameTypeSelect === "type-4" && objFile?.typeFile === "") {
+          setMessage("File size is too big please choose another file.");
+          return;
+        }
+
         nameTypeSelect === "type-3" &&
           setMessage("Select a form to duplicate.");
         nameTypeSelect === "type-2" || nameTypeSelect === "type-4"
