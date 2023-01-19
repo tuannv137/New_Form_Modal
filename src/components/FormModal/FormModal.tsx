@@ -220,16 +220,15 @@ const FormModal = () => {
                                   ? objFile?.inputFile
                                   : "Upload File"}
                               </TextButton>
-                              <Box paddingTop={2}>
-                                <Text>
-                                  Only JSON and CSV files up to 5 MB are
-                                  supported.
-                                </Text>
-                              </Box>
                             </>
                           )}
                         </FileUpload>
                       </EmptyState>
+                      <Box paddingTop={2} margin="0 auto">
+                        <Text skin="standard">
+                          Only JSON and CSV file up to 5 MB are supported.
+                        </Text>
+                      </Box>
                     </Box>
                   </Dropzone.Content>
                 </Dropzone>

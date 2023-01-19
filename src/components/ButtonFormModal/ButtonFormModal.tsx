@@ -11,7 +11,7 @@ import Input from "mgz-ui/dist/src/Input";
 import Loader from "mgz-ui/dist/src/Loader";
 import Text from "mgz-ui/dist/src/Text";
 import { initArrDataTemplate, initNewForm } from "../../stores/ReduxStore";
-import FormModal from "../FormModal/FormModal";
+import FormModal from "../FormModal";
 import { st, classes } from "./ButtonFormModal.st.css";
 
 export type ButtonFormModalProps = {
@@ -167,6 +167,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
       </Button>
       <Modal isOpen={!_.isUndefined(isOpenModal) && isOpenModal}>
         <CustomModalLayout
+          className={st(classes.modalLayout)}
           showFooterDivider
           showHeaderDivider
           onCloseButtonClick={() => setOpenModal(false)}

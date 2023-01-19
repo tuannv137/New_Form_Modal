@@ -6,6 +6,7 @@
 
 .root > div > div > div > div:nth-child(2) {
     padding: 30px 48px !important;
+    margin: 0;
 }
 
 .root > div > div > div > div > div > div:nth-child(2) {
