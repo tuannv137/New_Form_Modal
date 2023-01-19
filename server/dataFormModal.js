@@ -85,6 +85,12 @@ const dataFormTemplate = [
   },
 ];
 
+const dataNewForm = [
+  { id: "Form-1", name: "Form-1" },
+  { id: "Form-2", name: "Form-2" },
+  { id: "Form-3", name: "Form-3" },
+];
 module.exports = {
   dataFormTemplate,
+  dataNewForm,
 };

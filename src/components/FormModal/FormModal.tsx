@@ -15,7 +15,7 @@ import Upload from "wix-ui-icons-common/Upload";
 import Add from "wix-ui-icons-common/Add";
 import {
   initArrDataTemplate,
-  newFormModal,
+  initNewForm,
   setInputFile,
   setInputNameFormStore,
   setNameTypeSelectForm,
@@ -81,7 +81,7 @@ const FormModal = () => {
           name && name.name && dispatch(setInputNameFormStore(name?.name));
         }
         nameTypeSelect === "type-2" && dispatch(initArrDataTemplate(arrSelect));
-        nameTypeSelect === "type-3" && dispatch(newFormModal(arrSelect));
+        nameTypeSelect === "type-3" && dispatch(initNewForm(arrSelect));
       }
     }
   };
@@ -171,6 +171,10 @@ const FormModal = () => {
                     options={options}
                     onSelect={handleSelectOption}
                     selectedId={_.find(dataNewForm, ["isSelect", true])?.id}
+                    popoverProps={{
+                      appendTo: "window",
+                    }}
+                    customInput
                   />
                 </Box>
               )}

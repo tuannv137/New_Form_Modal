@@ -1,18 +1,21 @@
 import { Provider } from "react-redux";
+import App from "../../App";
 import ButtonFormModal from "./ButtonFormModal";
 import { initStore } from "../../stores/store";
 
 const store = initStore();
-
-describe("show mount", () => {
+describe("test component", () => {
   beforeEach(() => {
     cy.viewport("macbook-15");
   });
-  it("show mount", () => {
+  it("playground", () => {
     cy.mount(
       <Provider store={store}>
-        <ButtonFormModal openModal={false} />
+        <ButtonFormModal />
       </Provider>
     );
+
+    cy.get('[data-hook="btn-open-modal"]');
+    //.click();
   });
 });

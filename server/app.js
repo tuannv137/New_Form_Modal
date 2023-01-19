@@ -33,6 +33,23 @@ app.get("/get-form-template", (req, res) => {
   }
 });
 
+app.get("/get-new-form", (req, res) => {
+  try {
+    const data = dataFormModal.dataNewForm;
+    if (data) {
+      return res.json(data);
+    } else {
+      return res.status(404).json({
+        message: "Data not found!",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error from server!",
+    });
+  }
+});
+
 app.post("/post-new-form", (req, res) => {
   try {
     const data = req.body;
@@ -64,7 +81,7 @@ app.post("/post-new-form", (req, res) => {
         arrForm,
         code: 0,
         message: "Create form successfully.",
-        url_redirect: "/form",
+        url_redirect: "/new-form",
       });
     }
   } catch (error) {

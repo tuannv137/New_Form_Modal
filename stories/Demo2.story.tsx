@@ -13,7 +13,7 @@ export default {
 
     demo({
       title: "Demo 2",
-      component: <App openModal={false} />,
+      component: <App />,
     }),
 
     // demo({

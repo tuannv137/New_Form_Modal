@@ -6,7 +6,7 @@ export type ActionTypes = {
     action: PayloadAction<Data[]>
   ) => void;
 
-  newFormModal: (state: InitDataType, action: PayloadAction<Data[]>) => void;
+  initNewForm: (state: InitDataType, action: PayloadAction<Data[]>) => void;
 
   setNameTypeSelectForm: (
     state: InitDataType,

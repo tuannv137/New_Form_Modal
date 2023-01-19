@@ -3,20 +3,7 @@ import type { ActionTypes } from "./ActionTypes";
 
 const initState = {
   dataTemplate: [],
-  dataNewForm: [
-    {
-      id: "form1",
-      name: "Form1",
-    },
-    {
-      id: "form2",
-      name: "Form2",
-    },
-    {
-      id: "form3",
-      name: "Form3",
-    },
-  ],
+  dataNewForm: [],
 
   nameTypeSelectForm: "type-1",
   inputNameFormStore: "",
@@ -32,7 +19,7 @@ const AppStore = createSlice<InitDataType, ActionTypes>({
       state.dataTemplate = action.payload;
     },
 
-    newFormModal: (state, action) => {
+    initNewForm: (state, action) => {
       state.dataNewForm = action.payload;
     },
 
@@ -56,7 +43,7 @@ const AppStore = createSlice<InitDataType, ActionTypes>({
 
 export const {
   initArrDataTemplate,
-  newFormModal,
+  initNewForm,
   setNameTypeSelectForm,
   setInputNameFormStore,
   setInputFile,

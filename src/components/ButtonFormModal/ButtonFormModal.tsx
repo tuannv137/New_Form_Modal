@@ -10,8 +10,8 @@ import Modal from "mgz-ui/dist/src/Modal";
 import Input from "mgz-ui/dist/src/Input";
 import Loader from "mgz-ui/dist/src/Loader";
 import Text from "mgz-ui/dist/src/Text";
-import { initArrDataTemplate, newFormModal } from "../../stores/ReduxStore";
-import PageForm from "../FormModal/FormModal";
+import { initArrDataTemplate, initNewForm } from "../../stores/ReduxStore";
+import FormModal from "../FormModal/FormModal";
 import { st, classes } from "./ButtonFormModal.st.css";
 
 export type ButtonFormModalProps = {
@@ -62,6 +62,19 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
     getArrTemplate();
   }, [getArrTemplate]);
 
+  const getArrDataNewForm = useCallback(async () => {
+    try {
+      const response = await axios.get("http://localhost:3006/get-new-form");
+      dispatch(initNewForm(response.data));
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    getArrDataNewForm();
+  }, [getArrDataNewForm]);
+
   const handleCreateForm = async () => {
     const newForm: Data = {
       id: uuidv4(),
@@ -105,7 +118,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
             setMessage(response.data.message);
           }, 1000);
           newForm && arrForm.push(newForm);
-          dispatch(newFormModal(arrForm));
+          dispatch(initNewForm(arrForm));
         }
       }
     } else {
@@ -141,6 +154,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
       <Button
         onClick={() => setOpenModal(true)}
         className={st(classes.btnOpenModal)}
+        dataHook="btn-open-modal"
       >
         Add New Form
       </Button>
@@ -180,7 +194,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
               </Button>
             </Box>
           }
-          content={<PageForm />}
+          content={<FormModal />}
         />
       </Modal>
     </div>
