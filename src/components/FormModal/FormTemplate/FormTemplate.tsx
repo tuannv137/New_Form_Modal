@@ -76,6 +76,9 @@ const FormTemplate = ({
               <Box
                 fontWeight={700}
                 fontSize={16}
+                wordBreak="break-all"
+                overflowY="auto"
+                maxHeight="100px"
               >{`No results for “${inputSearch}”`}</Box>
               <Box fontWeight={400} fontSize={16}>
                 Find templates by name.

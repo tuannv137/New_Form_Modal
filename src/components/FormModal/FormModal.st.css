@@ -1,7 +1,11 @@
 @st-import [B10, B30, D70] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
 
 .root {
-    overflow: hidden;
+    overflow-x: hidden !important;
+}
+
+.root > div {
+    max-width: 940px;
 }
 
 .root > div > div > div > div:nth-child(2) {
