@@ -7,17 +7,13 @@ describe("test component", () => {
   });
 
   it.only("get form template", () => {
-    cy.fixture("templates")
-      .then(function (data) {
-        cy.intercept("GET", "/get-form-template", { body: data });
-      })
-      .as("data");
+    cy.intercept("GET", "/get-form-template", (req) => {
+      console.log(req);
+    });
+    cy.intercept("GET", "/get-new-form", { forceNetworkError: true });
   });
 
   it("create form successfully", () => {
-    // cy.intercept("GET", "/get-form-template", { fixture: "templates.json" });
-    // cy.intercept("/get-form-template", { fixture: "templates.json" });
-
     cy.intercept("POST", "/post-new-form", {
       message: "Success",
       code: 0,

@@ -1,0 +1,137 @@
+@st-import [B10, D10, D10-42, D10-66, D40, D50, D65, D70, D80] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+@st-import IconButton from "mgz-ui/dist/src/IconButton/IconButton.st.css";
+
+.root {
+    position: relative;
+    background-color: value(D80);
+    outline: none;
+}
+
+.showData {
+    -st-states: isShowOptions;
+    border: 1px solid value(D50);
+    cursor: pointer;
+    display: block;
+    min-height: 2.2rem;
+    white-space: normal;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.showData:hover {
+    border-color: value(D40);
+}
+
+.iconDelete {
+    -st-states: isClearable;
+    cursor: pointer;
+    opacity: 0.4;
+    display: none;
+}
+
+.iconDelete:isClearable {
+    display: block;
+}
+
+.iconDelete:hover {
+    opacity: 0.7;
+}
+
+IconButton.toggleSelect {
+    background-color: value(D65);
+    border: none;
+    border-left: 1px solid value(D50);
+    position: absolute;
+    right: 0;
+    height: 100%;
+    top: 0;
+    border-radius: 0;
+    color: value(D10);
+}
+
+.showData:hover IconButton.toggleSelect {
+    border-color: value(D40);
+}
+
+.showData:isShowOptions IconButton.toggleSelect {
+    border-color: value(B10);
+}
+
+.showData:isShowOptions {
+    border-color: value(B10);
+}
+
+.listItemData {
+    cursor: pointer;
+    display: block;
+    padding-right: 5rem;
+    white-space: normal;
+}
+
+.text {
+    padding-left: 14px;
+    opacity: 0.7;
+}
+
+.itemData {
+    -st-states: isSingle, isMulti;
+    color: value(D10);
+}
+
+.itemData:isSingle {
+    padding: 0.5rem 1rem;
+}
+
+.itemData:isMulti {
+    background-color: value(D70);
+    border: 1px solid value(D10-42);
+    margin: 3px 1px 3px 3px;
+    position: relative;
+    transition: border-color .1s linear;
+}
+
+.itemData:isMulti:hover {
+    border-color: value(D10-66);
+    color: value(D10);
+}
+
+.closeItem {
+    opacity: .4;
+}
+
+.closeItem:hover {
+    opacity: 0.7;
+}
+
+.options {
+    -st-states: isShowOptions;
+    background-color: value(D80);
+    border: 1px solid value(B10);
+    border-radius: 1px;
+    box-shadow: 1px 1px 5px rgb(0 0 0 / 50%);
+    font-weight: 400;
+    left: 0;
+    margin: 2px 0 0;
+    min-width: 0;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    display: none;
+    z-index: 4;
+}
+
+.options:isShowOptions {
+    display: block;
+}
+
+.delete {
+    position: absolute;
+    right: 0;
+    height: 100%;
+    right: 40px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+}

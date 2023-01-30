@@ -15,4 +15,14 @@ declare interface Data {
   type?: string;
   fieldForm?: (Data | undefined)[];
   fileImport?: string;
+  data?: string;
+}
+
+declare interface DATA_UI {
+  value?: string;
+  label?: string;
+  groupOptions?: DATA_UI[];
+  level?: number;
+  path?: string;
+  isGroup?: boolean;
 }

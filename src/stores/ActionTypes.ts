@@ -1,30 +1,30 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
+import type { UiSelect } from "./ReduxStore";
 
 export type ActionTypes = {
-  initArrDataTemplate: (
-    state: InitDataType,
-    action: PayloadAction<Data[]>
+  initDataUI: (
+    state: UiSelect,
+    action: PayloadAction<{ dataOptions: DATA_UI[] }>
   ) => void;
 
-  initNewForm: (state: InitDataType, action: PayloadAction<Data[]>) => void;
-
-  setNameTypeSelectForm: (
-    state: InitDataType,
-    action: PayloadAction<"type-1" | "type-2" | "type-3" | "type-4" | string>
+  initFlatData: (
+    state: UiSelect,
+    action: PayloadAction<{ flatData: DATA_UI[] }>
   ) => void;
 
-  setInputNameFormStore: (
-    state: InitDataType,
-    action: PayloadAction<string>
+  addSelectoptions: (state: UiSelect, action: PayloadAction<DATA_UI[]>) => void;
+
+  deleteOptionSelected: (
+    state: UiSelect,
+    action: PayloadAction<DATA_UI[]>
   ) => void;
 
-  setInputFile: (
-    state: InitDataType,
-    action: PayloadAction<{ inputFile?: string; typeFile?: string }>
+  setIsInputSearchRef: (
+    state: UiSelect,
+    action: PayloadAction<boolean>
   ) => void;
 
-  setInputSearchForm: (
-    state: InitDataType,
-    action: PayloadAction<string>
-  ) => void;
+  changeElementFocused: (state: UiSelect, action: PayloadAction<any>) => void;
+
+  setIsLoading: (state: UiSelect, action: PayloadAction<boolean>) => void;
 };

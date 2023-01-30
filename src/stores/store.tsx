@@ -1,9 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import newFormModalReducer from "./ReduxStore";
+import newFormModalReducer from "./ReduxStoreModal";
+import mainReducer from "./ReduxStore";
 
 export const initStore = () => {
   return configureStore({
-    reducer: { new_form_modal: newFormModalReducer },
+    reducer: { new_form_modal: newFormModalReducer, ui_select: mainReducer },
+
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: false,
+      }),
   });
 };
 

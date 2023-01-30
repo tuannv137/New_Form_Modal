@@ -1,0 +1,51 @@
+@st-import [D40, D50, D60, D10-90] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+
+.loading {
+    -st-states: isLoadingInput;
+    color: value(D40) !important;
+    box-sizing: border-box;
+    font-size: 1.2rem !important;
+    justify-content: center;
+    padding: 4px 13px;
+    display: none;
+}
+
+.loading:isLoadingInput {
+    display: flex;
+}
+
+.root ul {
+    list-style: none;
+}
+
+.root .listItemOptionsTree {
+    margin: 0;
+    position: relative;
+    padding-left: 20px;
+    max-height: 27rem;
+    overflow: auto;
+}
+
+.listItemOptions {
+    margin-bottom: 0;
+    max-height: 27rem;
+    overflow-y: auto;
+}
+
+.done {
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid value(D60);
+    margin: 0 13px;
+    padding: 1rem 0;
+    outline: none;
+    margin-top: 1rem;
+}
+
+.done > button {
+    font-size: 14px;
+    min-width: 130px;
+    background: value(D60);
+    border-color: value(D50);
+    color: value(D10-90);
+}

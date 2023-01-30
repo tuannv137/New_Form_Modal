@@ -1,53 +1,71 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ActionTypes } from "./ActionTypes";
 
-const initState = {
-  dataTemplate: [],
-  dataNewForm: [],
-
-  nameTypeSelectForm: "type-1",
-  inputNameFormStore: "",
-  objFile: { inputFile: "", typeFile: "" },
-  inputSearchForm: "",
+export type UiSelect = {
+  dataOptions?: DATA_UI[];
+  flatDataOptions?: DATA_UI[];
+  selectedData?: DATA_UI[];
+  isInputSearchRef?: boolean;
+  elementFocused?: undefined;
+  isLoading?: boolean;
 };
 
-const AppStore = createSlice<InitDataType, ActionTypes>({
-  name: "new_form_modal",
-  initialState: initState as InitDataType,
+const initState: UiSelect = {
+  dataOptions: [],
+  flatDataOptions: [],
+  selectedData: [],
+  isInputSearchRef: false,
+  elementFocused: undefined,
+  isLoading: false,
+};
+
+const AppStore = createSlice<UiSelect, ActionTypes>({
+  name: "ui_select",
+  initialState: initState as UiSelect,
   reducers: {
-    initArrDataTemplate: (state, action) => {
-      state.dataTemplate = action.payload;
+    initDataUI: (state, action) => {
+      const { dataOptions } = action.payload;
+      state.dataOptions = [...dataOptions];
     },
 
-    initNewForm: (state, action) => {
-      state.dataNewForm = action.payload;
+    initFlatData: (state, action) => {
+      const { flatData } = action.payload;
+      state.flatDataOptions = [...flatData];
     },
 
-    setNameTypeSelectForm: (state, action) => {
-      state.nameTypeSelectForm = action.payload;
+    addSelectoptions: (state, action) => {
+      const arrSelect = action.payload;
+      state.selectedData = arrSelect;
     },
 
-    setInputNameFormStore: (state, action) => {
-      state.inputNameFormStore = action.payload;
+    deleteOptionSelected: (state, action) => {
+      const arrDelete = action.payload;
+      state.selectedData = arrDelete;
     },
 
-    setInputFile: (state, action) => {
-      state.objFile = action.payload;
+    setIsInputSearchRef: (state, action) => {
+      const isInputRef = action.payload;
+      state.isInputSearchRef = isInputRef;
     },
 
-    setInputSearchForm: (state, action) => {
-      state.inputSearchForm = action.payload;
+    changeElementFocused: (state, action) => {
+      state.elementFocused = action.payload;
+    },
+
+    setIsLoading: (state, action) => {
+      state.isLoading = action.payload;
     },
   },
 });
 
 export const {
-  initArrDataTemplate,
-  initNewForm,
-  setNameTypeSelectForm,
-  setInputNameFormStore,
-  setInputFile,
-  setInputSearchForm,
+  initDataUI,
+  initFlatData,
+  addSelectoptions,
+  deleteOptionSelected,
+  setIsInputSearchRef,
+  changeElementFocused,
+  setIsLoading,
 } = AppStore.actions;
 
 export default AppStore.reducer;

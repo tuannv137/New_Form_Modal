@@ -1,5 +1,5 @@
-@st-import Button from "mgz-ui/dist/src/Button/Button.st.css";
 @st-import [C2, D80, R00, R10] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+@st-import Button from "mgz-ui/dist/src/Button/Button.st.css";
 
 :global(div) {
     font-family: 'Wix Madefor Text', sans-serif !important;

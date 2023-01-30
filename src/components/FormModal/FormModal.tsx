@@ -19,11 +19,9 @@ import {
   setInputFile,
   setInputNameFormStore,
   setNameTypeSelectForm,
-} from "../../stores/ReduxStore";
+} from "../../stores/ReduxStoreModal";
 import FormTemplate from "./FormTemplate/FormTemplate";
 import { st, classes } from "./FormModal.st.css";
-
-export type FormModalProps = {};
 
 const FormModal = () => {
   const data = useSelector(
@@ -97,17 +95,6 @@ const FormModal = () => {
       }
   };
 
-  const options: any = _.map(dataNewForm, (item) => ({
-    id: item.id,
-    value: item.name,
-  }));
-
-  const handleSelectOption = (opt: any) => {
-    if (opt) {
-      handleClickSelect("ARR_NEWFORM", opt.id);
-    }
-  };
-
   return (
     <Page className={st(classes.root)} maxWidth={940}>
       <Page.Header title="" subtitle="" />
@@ -151,28 +138,11 @@ const FormModal = () => {
                 </Box>
               )}
 
-              {nameTypeSelect === "type-2" && (
+              {(nameTypeSelect === "type-2" || nameTypeSelect === "type-3") && (
                 <FormTemplate
                   handleClickSelect={handleClickSelect}
                   arrTemplate={arrTemplate}
                 />
-              )}
-
-              {nameTypeSelect === "type-3" && (
-                <Box
-                  className={st(classes.typeDuplicate)}
-                  width="100%"
-                  height="100%"
-                >
-                  <Dropdown
-                    className={st(classes.selectItem)}
-                    size="large"
-                    placeholder="Select Form"
-                    options={options}
-                    onSelect={handleSelectOption}
-                    selectedId={_.find(dataNewForm, ["isSelect", true])?.id}
-                  />
-                </Box>
               )}
 
               {nameTypeSelect === "type-4" && (

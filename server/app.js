@@ -8,12 +8,6 @@ const app = express();
 const port = 3006;
 app.use(cors());
 
-// {
-//   status: true | false
-//   message: 'aaaaa',
-//   redirect_url: ''
-// }
-
 app.use(bodyParser.json());
 
 app.get("/get-form-template", (req, res) => {
@@ -56,7 +50,7 @@ app.post("/post-new-form", (req, res) => {
 
     if (!data.name) {
       return res.status(200).json({
-        code: 1,
+        status: false,
         message: "Form name cannot be empty.",
       });
     }
@@ -65,21 +59,22 @@ app.post("/post-new-form", (req, res) => {
       id: data.id,
       name: data.name,
       type: data.type,
-      fieldForm: data.fieldForm,
+      data: data.data,
+      fileImport: data.fileImport,
     };
 
     const arrForm = _.cloneDeep(data.arrForm);
 
     if (_.find(arrForm, ["name", data.name])) {
       return res.status(200).json({
-        code: 2,
+        status: false,
         message: "Name of the form already exists.",
       });
     } else {
       return res.status(200).json({
         newForm,
         arrForm,
-        code: 0,
+        status: true,
         message: "Create form successfully.",
         url_redirect: "/new-form",
       });

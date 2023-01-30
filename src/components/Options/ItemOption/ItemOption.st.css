@@ -1,0 +1,61 @@
+@st-import [B40, D60, D20-60] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+
+.root {
+    -st-states: active, isHover, isGroup, isDisable;
+    cursor: pointer;
+    display: block;
+    padding: 0.5em 1em;
+    transition: all 0.3s;
+    display: flex;
+    gap: 7px;
+    outline: none;
+    position: relative;
+}
+
+.root:active {
+    background-color: value(B40);
+}
+
+.root:isHover {
+    background-color: value(D60);
+}
+
+.root:isGroup {
+    background-color: transparent;
+    cursor: default;
+}
+
+.root:isDisable {
+    background-color: transparent;
+    cursor: default;
+}
+
+.root:isGroup .labelItem {
+    font-weight: 600 !important;
+}
+
+.root:isDisable > .labelItem {
+    opacity: 0.5;
+}
+
+.root:isGroup .numberGroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 20px;
+    height: 18px;
+    background-color: value(D60);
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
+.itemPath {
+    color: value(D20-60) !important;
+    font-size: 14px;
+    font-weight: 400 !important;
+    padding-left: 1rem;
+}

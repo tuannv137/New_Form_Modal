@@ -1,0 +1,120 @@
+@st-import [B20, D20-60, D40, D60] from "mgz-ui/dist/src/Foundation/stylable/colors.st.css";
+
+.root {
+    margin-bottom: 5px;
+}
+
+.contentFilter {
+    position: relative;
+    margin: 13px;
+    border-bottom: 1px solid value(D60);
+}
+
+.actionSearch {
+    position: relative;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.iconLoading {
+    -st-states: isLoading;
+    position: absolute;
+    right: 100px;
+    top: -32px;
+    display: none;
+    z-index: 10;
+}
+
+.iconLoading:isLoading {
+    display: inline-block;
+}
+
+.loadingSelect {
+    display: inline-block;
+    position: relative;
+}
+
+.loadingSelect div {
+    position: absolute;
+    top: 33px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: value(D40);
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.loadingSelect div:nth-child(1) {
+    left: 33px;
+    animation: lds-ellipsis1 0.6s infinite;
+}
+
+.loadingSelect div:nth-child(2) {
+    left: 33px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.loadingSelect div:nth-child(3) {
+    left: 45px;
+    animation: lds-ellipsis2 0.6s infinite;
+}
+
+.loadingSelect div:nth-child(4) {
+    left: 56px;
+    animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+    0% {
+        transform: scale(0);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes lds-ellipsis3 {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(0);
+    }
+}
+
+@keyframes lds-ellipsis2 {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(10px, 0);
+    }
+}
+
+.inputFilter {
+    width: calc(100%);
+}
+
+.inconSearch {
+    position: absolute !important;
+    top: 3px;
+    right: 4px;
+    color: value(B20);
+    height: 28px;
+    width: 28px;
+    z-index: 5;
+}
+
+.itemsQuality {
+    color: value(D20-60) !important;
+    margin: 1rem 0 !important;
+}
+
+.searchWapper {
+    position: relative;
+}

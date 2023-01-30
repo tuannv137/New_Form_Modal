@@ -10,7 +10,7 @@ import Modal from "mgz-ui/dist/src/Modal";
 import Input from "mgz-ui/dist/src/Input";
 import Loader from "mgz-ui/dist/src/Loader";
 import Text from "mgz-ui/dist/src/Text";
-import { initArrDataTemplate, initNewForm } from "../../stores/ReduxStore";
+import { initArrDataTemplate, initNewForm } from "../../stores/ReduxStoreModal";
 import FormModal from "../FormModal";
 import { st, classes } from "./ButtonFormModal.st.css";
 
@@ -26,7 +26,6 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
   const dataNewForm = data.dataNewForm;
   const dataTemplate = data.dataTemplate;
   const nameTypeSelect = data.nameTypeSelectForm;
-  const inputNameFormStore: string | undefined = data.inputNameFormStore;
   const [isOpenModal, setOpenModal] = useState<boolean | undefined>(openModal);
   const [inputNameForm, setInputNameForm] = useState<string | undefined>("");
   const [message, setMessage] = useState<string>("");
@@ -37,7 +36,6 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
     ["isSelect", true]
   );
   const disableBtn =
-    inputNameForm === "" ||
     (isSelect === false && nameTypeSelect === "type-2") ||
     (nameTypeSelect === "type-4" &&
       (objFile?.inputFile === "" || objFile?.typeFile === "")) ||
@@ -53,7 +51,8 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
       const response = await axios.get(
         "http://localhost:3006/get-form-template"
       );
-      dispatch(initArrDataTemplate(response.data));
+
+      if (response) dispatch(initArrDataTemplate(response.data));
     } catch (error) {
       console.log(error);
     }
@@ -66,7 +65,8 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
   const getArrDataNewForm = useCallback(async () => {
     try {
       const response = await axios.get("http://localhost:3006/get-new-form");
-      dispatch(initNewForm(response.data));
+
+      if (response) dispatch(initNewForm(response.data));
     } catch (error) {
       console.log(error);
     }
@@ -77,35 +77,35 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
   }, [getArrDataNewForm]);
 
   const handleCreateForm = async () => {
-    const newForm: Data = {
-      id: uuidv4(),
-      name: inputNameForm,
-      type: nameTypeSelect,
-      fieldForm: isSelect
-        ? [
-            _.find(nameTypeSelect === "type-2" ? dataTemplate : dataNewForm, [
+    try {
+      const newForm: Data = {
+        id: uuidv4(),
+        name: inputNameForm,
+        type: nameTypeSelect,
+        data: isSelect
+          ? _.find(nameTypeSelect === "type-2" ? dataTemplate : dataNewForm, [
               "isSelect",
               true,
-            ]),
-          ]
-        : [],
-      fileImport:
-        objFile?.typeFile && nameTypeSelect === "type-4"
-          ? objFile.inputFile
+            ])?.data
           : "",
-    };
+        fileImport:
+          objFile?.typeFile && nameTypeSelect === "type-4"
+            ? objFile.inputFile
+            : "",
+      };
 
-    const arrForm: Data[] | undefined = _.cloneDeep(data.dataNewForm);
+      const arrForm: Data[] | undefined = _.cloneDeep(data.dataNewForm);
 
-    const response = await axios.post("http://localhost:3006/post-new-form", {
-      ...newForm,
-      arrForm: arrForm,
-    });
+      const response = await axios.post("http://localhost:3006/post-new-form", {
+        ...newForm,
+        arrForm: arrForm,
+      });
 
-    if (response.data.code === 0) {
+      setIsLoading(true);
+
       if (disableBtn) {
         setIsMessage(false);
-
+        setIsLoading(false);
         if (nameTypeSelect === "type-4" && objFile?.typeFile === "") {
           setMessage("File size is too big please choose another file.");
           return;
@@ -117,44 +117,35 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
           ? setMessage("Please upload a template file.")
           : setMessage("");
       } else {
-        if (!_.isUndefined(arrForm)) {
-          setIsLoading(true);
+        if (response.data.status === true) {
+          if (!_.isUndefined(arrForm)) {
+            setTimeout(() => {
+              setIsMessage(true);
+              setIsLoading(false);
+              setMessage(response.data.message);
+            }, 1000);
+            newForm && arrForm.push(newForm);
+            dispatch(initNewForm(arrForm));
+          }
+        } else {
           setTimeout(() => {
-            setIsMessage(true);
             setIsLoading(false);
+            setIsMessage(false);
             setMessage(response.data.message);
           }, 1000);
-          newForm && arrForm.push(newForm);
-          dispatch(initNewForm(arrForm));
         }
       }
-    } else {
-      !disableBtn && setIsLoading(true);
-
-      if (response.data.code === 1) {
-        setMessage(response.data.message);
-        setIsMessage(false);
-      } else {
-        setTimeout(() => {
-          setIsLoading(false);
-          setIsMessage(false);
-          setMessage(response.data.message);
-        }, 1000);
-      }
+    } catch (error) {
+      setIsLoading(true);
+      console.log(error);
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleCreateForm();
+      !disableBtn && inputNameForm !== "" && handleCreateForm();
     }
   };
-
-  useEffect(() => {
-    if (inputNameFormStore !== "") {
-      setInputNameForm(inputNameFormStore);
-    }
-  }, [inputNameFormStore]);
 
   return (
     <div className={st(classes.root)}>
@@ -165,7 +156,11 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
       >
         Add New Form
       </Button>
-      <Modal isOpen={!_.isUndefined(isOpenModal) && isOpenModal}>
+      <Modal
+        isOpen={!_.isUndefined(isOpenModal) && isOpenModal}
+        shouldCloseOnOverlayClick={true}
+        onRequestClose={() => setOpenModal(false)}
+      >
         <CustomModalLayout
           className={st(classes.modalLayout)}
           showFooterDivider
@@ -196,7 +191,7 @@ const ButtonFormModal = ({ openModal }: ButtonFormModalProps) => {
               <Button
                 size="small"
                 onClick={handleCreateForm}
-                disabled={disableBtn}
+                disabled={disableBtn || !inputNameForm}
               >
                 {isLoading ? <Loader size="tiny" /> : "Create Form"}
               </Button>

@@ -2,8 +2,8 @@ import { memo, useState } from "react";
 import _ from "lodash";
 import Box from "mgz-ui/dist/src/Box";
 import DropdownLayout from "mgz-ui/dist/src/DropdownLayout";
-import Image from "mgz-ui/dist/src/Image";
 import Search from "mgz-ui/dist/src/Search";
+import ReactHtmlParser from "react-html-parser";
 import { st, classes } from "./FormTemplate.st.css";
 
 export type FormTemplateProps = {
@@ -102,12 +102,7 @@ const FormTemplate = ({
               (item) =>
                 item.isSelect === true && (
                   <Box key={item.id} margin="auto">
-                    <Image
-                      src={item.url_image}
-                      alt={item.name}
-                      fit="contain"
-                      className={st(classes.image)}
-                    />
+                    {item.data && ReactHtmlParser(item.data)}
                   </Box>
                 )
             )}
