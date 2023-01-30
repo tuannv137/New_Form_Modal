@@ -1,10 +1,10 @@
 import { memo, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
+import { v4 as uuidv4 } from "uuid";
 import AddItem from "mgz-ui/dist/src/AddItem";
 import Box from "mgz-ui/dist/src/Box";
 import Card from "mgz-ui/dist/src/Card";
-import Dropdown from "mgz-ui/dist/src/Dropdown";
 import Dropzone from "mgz-ui/dist/src/Dropzone";
 import EmptyState from "mgz-ui/dist/src/EmptyState";
 import FileUpload from "mgz-ui/dist/src/FileUpload";
@@ -60,18 +60,30 @@ const FormModal = () => {
     );
   }, [nameTypeSelect]);
 
+  let arrDataForm: Data[] | undefined = [];
+
+  if (nameTypeSelect === "type-2")
+    arrDataForm = _.map(arrTemplate, (item) => ({
+      ...item,
+      id: uuidv4(),
+    }));
+
+  if (nameTypeSelect === "type-3")
+    arrDataForm = _.map(dataNewForm, (item) => ({
+      ...item,
+      id: uuidv4(),
+    }));
+
   const handleClickSelect = (type?: string, id?: string) => {
     if (id) {
       if (type === "ARR_TYPE_SELECT") {
         const typeSelect = "type-" + id;
         dispatch(setNameTypeSelectForm(typeSelect));
       } else {
-        const arrSelect = _.map(
-          nameTypeSelect === "type-2" ? arrTemplate : dataNewForm,
-          (item) =>
-            item.id === id
-              ? { ...item, isSelect: true }
-              : { ...item, isSelect: false }
+        const arrSelect = _.map(arrDataForm, (item) =>
+          item.id === id
+            ? { ...item, isSelect: true }
+            : { ...item, isSelect: false }
         );
 
         if (nameTypeSelect === "type-2") {
@@ -141,7 +153,7 @@ const FormModal = () => {
               {(nameTypeSelect === "type-2" || nameTypeSelect === "type-3") && (
                 <FormTemplate
                   handleClickSelect={handleClickSelect}
-                  arrTemplate={arrTemplate}
+                  arrData={arrDataForm}
                 />
               )}
 

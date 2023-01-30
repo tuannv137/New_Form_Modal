@@ -8,30 +8,27 @@ import { st, classes } from "./FormTemplate.st.css";
 
 export type FormTemplateProps = {
   handleClickSelect?: (type?: string, id?: string) => void;
-  arrTemplate?: Data[];
+  arrData?: Data[];
 };
 
-const FormTemplate = ({
-  handleClickSelect,
-  arrTemplate,
-}: FormTemplateProps) => {
+const FormTemplate = ({ handleClickSelect, arrData }: FormTemplateProps) => {
   const [inputSearch, setInputSearch] = useState("");
-  const isSelect = _.some(arrTemplate, ["isSelect", true]);
+  const isSelect = _.some(arrData, ["isSelect", true]);
 
   if (inputSearch !== "") {
-    arrTemplate = _.filter(arrTemplate, (item) =>
+    arrData = _.filter(arrData, (item) =>
       _.includes(_.toLower(item.name), _.toLower(inputSearch))
     );
   }
 
-  const options: any[] = _.map(arrTemplate, (item) => ({
+  const handleSelectedId = (id?: string) => {
+    handleClickSelect && handleClickSelect("ARR_OTHER", id);
+  };
+
+  const options: any = _.map(arrData, (item) => ({
     id: item.id,
     value: item.name,
   }));
-
-  const handleSelectedId = (id?: string) => {
-    handleClickSelect && handleClickSelect("ARR_TEMPLATE", id);
-  };
 
   return (
     <Box direction="horizontal" className={st(classes.root)}>
@@ -56,14 +53,14 @@ const FormTemplate = ({
           height="500px"
           className={st(classes.listArrData)}
         >
-          {_.size(arrTemplate) > 0 ? (
+          {_.size(arrData) > 0 ? (
             <DropdownLayout
               className={st(classes.listItem)}
               maxHeightPixels="415px"
               visible
               inContainer
               options={options}
-              selectedId={_.find(arrTemplate, ["isSelect", true])?.id}
+              selectedId={_.find(arrData, ["isSelect", true])?.id}
               onSelect={({ id }) => handleSelectedId(_.toString(id))}
             />
           ) : (
@@ -89,7 +86,7 @@ const FormTemplate = ({
       </Box>
       <Box
         className={st(classes.right, {
-          isHaveSelect: _.some(arrTemplate, ["isSelect", true]),
+          isHaveSelect: _.some(arrData, ["isSelect", true]),
         })}
         fontSize={16}
         fontWeight={700}
@@ -98,7 +95,7 @@ const FormTemplate = ({
         {isSelect ? (
           <>
             {_.map(
-              arrTemplate,
+              arrData,
               (item) =>
                 item.isSelect === true && (
                   <Box key={item.id} margin="auto">
